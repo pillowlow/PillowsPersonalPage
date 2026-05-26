@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (with base path `/PillowsPersonalPage/`). Example: `http://localhost:5173/PillowsPersonalPage/`.
+Open the URL Vite prints. Example: `http://localhost:5173/`.
 
 ## Project structure
 
@@ -60,9 +60,9 @@ Change colors, typography `clamp()` sizes, spacing, and component dimensions. `a
 
 ## Deploy to GitHub Pages
 
-1. Ensure the GitHub repo name matches `base` in `vite.config.js` (default: `/PillowsPersonalPage/`).
-2. Push to `main`; GitHub Actions (`.github/workflows/deploy.yml`) builds and deploys `dist/` to Pages.
-3. In repo **Settings → Pages**, set source to **GitHub Actions**.
+1. Push to `main`; GitHub Actions (`.github/workflows/deploy.yml`) builds and deploys `dist/` to Pages.
+2. In repo **Settings → Pages**, set source to **GitHub Actions** and custom domain `pillowlowchen.com` (see `public/CNAME`).
+3. Point DNS A records for the apex domain to GitHub Pages; optional `www` CNAME to `YOUR_USERNAME.github.io`.
 
 Manual deploy:
 
