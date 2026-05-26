@@ -1,0 +1,86 @@
+{
+  "en": {
+    "siteTitle": "Po Yu Chen (pillow)",
+    "switchers": {
+      "mainContent": "About me / Mission & Vision",
+      "language": "EN/中"
+    },
+    "sections": {
+      "projects": "Projects",
+      "filter": "Filter"
+    },
+    "mainContent": {
+      "mission": {
+        "title": "Mission",
+        "body": "Placeholder mission statement. Edit this text in src/data/site.json."
+      },
+      "about": {
+        "title": "About me",
+        "body": "Placeholder about section. Edit this text in src/data/site.json."
+      }
+    },
+    "portfolio": {
+      "alt": "Portrait"
+    },
+    "links": {
+      "email": "mailto:you@example.com",
+      "instagram": "https://instagram.com/"
+    },
+    "filters": {
+      "publications": "Publications",
+      "firstAuthors": "First authors",
+      "artworks": "Art works",
+      "competitions": "Competitions",
+      "others": "Others"
+    },
+    "slider": {
+      "data": "data",
+      "experience": "experience"
+    },
+    "projectCard": {
+      "clickNextImage": "Click for next image"
+    }
+  },
+  "zh": {
+    "siteTitle": "Po Yu Chen (pillow)",
+    "switchers": {
+      "mainContent": "關於我 / 使命與願景",
+      "language": "EN/中"
+    },
+    "sections": {
+      "projects": "專案",
+      "filter": "篩選"
+    },
+    "mainContent": {
+      "mission": {
+        "title": "使命",
+        "body": "使命說明佔位文字。請在 src/data/site.json 中編輯。"
+      },
+      "about": {
+        "title": "關於我",
+        "body": "關於我佔位文字。請在 src/data/site.json 中編輯。"
+      }
+    },
+    "portfolio": {
+      "alt": "個人照片"
+    },
+    "links": {
+      "email": "mailto:you@example.com",
+      "instagram": "https://instagram.com/"
+    },
+    "filters": {
+      "publications": "出版",
+      "firstAuthors": "第一作者",
+      "artworks": "藝術作品",
+      "competitions": "競賽與工作坊",
+      "others": "其他"
+    },
+    "slider": {
+      "data": "資料",
+      "experience": "體驗"
+    },
+    "projectCard": {
+      "clickNextImage": "點擊切換下一張圖"
+    }
+  }
+}
