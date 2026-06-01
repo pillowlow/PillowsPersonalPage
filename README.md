@@ -20,8 +20,7 @@ Open the URL Vite prints. Example: `http://localhost:5173/`.
 ## Project structure
 
 ```
-├── Assets/              # Source assets (copy into public/assets when adding files)
-├── public/assets/       # Served static files
+├── public/assets/       # Static images, icons, playground assets (served by Vite)
 ├── References/          # Layout wireframes (not used at runtime)
 ├── src/
 │   ├── theme.js         # Design tokens → CSS variables
@@ -52,7 +51,7 @@ Each project supports:
 | `contentEn` / `contentZh` | Project description |
 | `references` | `{ text, link }[]` |
 
-Add images to `Assets/`, then copy to `public/assets/` (e.g. `public/assets/projects/my-work.jpg`).
+Add images directly under `public/assets/` (e.g. `public/assets/projects/my-work.jpg`).
 
 ### Theme (`src/theme.js`)
 
@@ -75,4 +74,3 @@ npm run build
 
 - Implement interactive p5 playground (drag circle, visuals)
 - Wire the digital/perceptual slider to sketch parameters
-- Replace placeholder copy and project entries

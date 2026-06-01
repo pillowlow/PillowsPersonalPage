@@ -188,30 +188,31 @@ h2 {
   min-width: 0;
 }
 
-.upper-right-content {
-  display: grid;
-  grid-template-columns: minmax(0, 30%) minmax(0, 1fr);
+.intro-panel {
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
   gap: 0;
   min-width: 0;
+  min-height: 0;
   border-top: var(--stroke-width) solid var(--color-stroke);
 }
 
-.profile-panel {
+.intro-panel__identity {
+  flex-shrink: 0;
   display: flex;
-  min-width: 0;
-  min-height: 0;
-  border-right: var(--stroke-width) solid var(--color-stroke);
+  justify-content: center;
+  padding: var(--content-padding);
+  border-bottom: var(--stroke-width) solid var(--color-stroke);
 }
 
-.profile-panel .portfolio-div {
-  flex: 1;
-  width: 100%;
+.intro-panel__identity .portfolio-div {
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  padding: var(--content-padding);
+  width: 100%;
+  max-width: 14rem;
 }
 
 .playground-div {
@@ -438,6 +439,7 @@ h2 {
 
 .description-div {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   justify-content: flex-start;
   min-width: 0;
@@ -848,7 +850,7 @@ h2 {
     flex-shrink: 0;
   }
 
-  .upper-right-content {
+  .intro-panel {
     grid-column: 2;
     grid-row: 1;
     border-top: none;

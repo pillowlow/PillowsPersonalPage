@@ -1,36 +1,61 @@
 [
   {
-    "id": "example-2025",
-    "images": [
-      "/assets/projects/example-1.jpg",
-      "/assets/projects/example-2.jpg"
-    ],
-    "year": 2025,
-    "types": ["publication", "first-author"],
-    "contentEn": "Sample project from 2025. Replace with your publication or artwork description.",
-    "contentZh": "2025 範例專案。請替換為您的出版或作品說明。",
-    "references": [
-      { "text": "Paper (placeholder)", "link": "https://example.com" }
-    ]
-  },
-  {
-    "id": "artwork-2024",
-    "images": ["/assets/projects/example-1.jpg"],
-    "year": 2024,
-    "types": ["artwork"],
-    "contentEn": "Sample artwork entry from 2024.",
-    "contentZh": "2024 藝術作品範例。",
+    "id": "siptrix-2026",
+    "images": ["/assets/projects/siptrix.jpg"],
+    "year": 2026,
+    "types": ["workshop", "other"],
+    "contentEn": "SIPTRIX is an AI-driven creativity support tool for developing cocktail recipes through interactive exploration. Users build ideas via a mind-graph interface that connects ingredients, sensory qualities, techniques, and inspirations. We held a workshop at Bar Yoru with 11 mixology enthusiasts and 11 professional bartenders; the system helped non-experts articulate inspirations and gave the graph a role as a shared discussion space.",
+    "contentZh": "SIPTRIX 是一款以 AI 輔助的創意支援工具，透過互動探索協助使用者發展調酒配方。使用者以心智圖介面連結食材、感官特質、技法與靈感。我們在 Bar Yoru 舉辦工作坊，邀請 11 位調酒愛好者與 11 位具三年以上經驗的調酒師參與；系統特別幫助非專家更清楚表達靈感，並讓圖像成為共同討論的空間。",
     "references": []
   },
   {
-    "id": "competition-2023",
-    "images": ["/assets/projects/example-2.jpg"],
+    "id": "flavorface-2026",
+    "images": ["/assets/projects/flavorface.jpg"],
+    "year": 2026,
+    "types": ["other"],
+    "contentEn": "FlavorFace is an LLM-supported personal flavor wiki and node-based editor. Flexible “entities” (ingredients, recipes, memories, impressions) connect through tasks such as decompose, convert, and assemble. Subjective channels—taste, aroma, texture, culture, memory—stay editable; visual summaries help communicate flavor character. A UIST 2026 workshop in Detroit is in preparation.",
+    "contentZh": "FlavorFace 是一款由大型語言模型支援的個人風味維基與節點式編輯器。彈性的「實體」（食材、食譜、記憶、印象）可透過拆解、轉換、組裝等任務連結；味覺、香氣、質地、文化與記憶等主觀通道可持續編輯，並以視覺摘要溝通風味特徵。目前正籌備 2026 年於底特律 UIST 的工作坊。",
+    "references": []
+  },
+  {
+    "id": "ar-theater-workshop-2026",
+    "images": ["/assets/projects/ar-theater-workshop.jpg"],
+    "year": 2026,
+    "types": ["workshop"],
+    "contentEn": "A 2026 workshop with performing-arts students at National Taiwan Normal University explored mobile marker-based WebAR for theater. Participants built simple 3D characters and 30-second AR performance scenes, considering staging, timing, and hybrid presence alongside physical performers.",
+    "contentZh": "2026 年與國立台灣師範大學表演藝術研究所學生合作的工作坊，探索行動標記式 WebAR 於劇場的應用。參與者製作簡易 3D 角色與 30 秒 AR 表演片段，思考走位、節奏與實體演出者並存的混合呈現。",
+    "references": []
+  },
+  {
+    "id": "gustogear-2024",
+    "images": ["/assets/projects/gustogear.jpg"],
+    "year": 2024,
+    "types": ["publication", "first-author"],
+    "contentEn": "GustoGear is a multisensory mixed-reality interface linking virtual events with physical taste and texture. A rotating gear presents flavored conductive jelly units; licking acts as both input and output. The work imagines flavor as programmable material for playful “virtual cooking” between body and digital environments.",
+    "contentZh": "GustoGear 是一款多感官混合實境介面，將虛擬事件與實體味覺、觸覺連結。旋轉齒輪呈現不同風味的導電果凍單元；舔食同時是輸入也是輸出。作品將風味想像為可編程的材料，在身體與數位環境之間進行 playful 的「虛擬烹飪」。",
+    "references": [
+      {
+        "text": "IMX 2024 (ACM)",
+        "link": "https://dl.acm.org/doi/10.1145/3639701.3663644"
+      }
+    ]
+  },
+  {
+    "id": "max-tongue-2023",
+    "images": ["/assets/projects/max-tongue.jpg"],
     "year": 2023,
     "types": ["competition"],
-    "contentEn": "Sample competition entry from 2023.",
-    "contentZh": "2023 競賽範例。",
-    "references": [
-      { "text": "Project page", "link": "https://example.com" }
-    ]
+    "contentEn": "MAX Tongue explores tongue-based interaction in VR using EMG sensing and a lollipop-based demo. Different licking actions move targets in virtual space, inviting users to reconsider the tongue as an expressive input channel. Exhibited at Laval Virtual 2023.",
+    "contentZh": "MAX Tongue 以 EMG 感測與棒棒糖互動探索 VR 中的舌頭操作。不同舔食動作驅動虛擬目標，邀請使用者重新思考舌頭作為表達性輸入介面。曾於 2023 年 Laval Virtual 展出。",
+    "references": []
+  },
+  {
+    "id": "geo-nodes-workshop-2022",
+    "images": ["/assets/projects/geo-nodes-workshop.jpg"],
+    "year": 2022,
+    "types": ["workshop"],
+    "contentEn": "A procedural concept art workshop introducing Blender Geometry Nodes. Participants experimented with generative structures—ropes, urban scenes, mechanical spaces—learning procedural thinking as part of creative practice.",
+    "contentZh": "一場介紹 Blender Geometry Nodes 的程序化概念藝術工作坊。參與者實驗繩索、都市、機械空間等生成結構，學習將程序化思維融入創作流程。",
+    "references": []
   }
 ]

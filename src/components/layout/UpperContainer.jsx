@@ -32,12 +32,12 @@ export default function UpperContainer() {
           <VirtualTerminal />
         </div>
 
-        <div className="upper-right-content">
-          <div className="profile-panel">
+        <aside className="intro-panel">
+          <div className="intro-panel__identity">
             <PortfolioDiv />
           </div>
           <DescriptionDiv activeView={activeView} />
-        </div>
+        </aside>
       </div>
     </section>
   );
