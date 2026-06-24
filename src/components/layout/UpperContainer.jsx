@@ -9,7 +9,7 @@ import PortfolioDiv from '../PortfolioDiv';
 import { useSiteContent } from '../../hooks/useSiteContent';
 
 export default function UpperContainer() {
-  const [activeView, setActiveView] = useState('mission');
+  const [activeView, setActiveView] = useState('about');
   const [sliderValue, setSliderValue] = useState(50);
   const copy = useSiteContent();
 
