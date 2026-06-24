@@ -16,7 +16,7 @@
       },
       "about": {
         "title": "About me",
-        "body": "I am Po-Yu Chen (pillow)—an HCI researcher, creative technologist, and artist based in Taipei, Taiwan.\n\nI earned a B.F.A. in Art and Technology from National Tsing Hua University (NTHU). I am now a second-year master's student in the Graduate Institute of Networking and Multimedia (GINM) at National Taiwan University (NTU), advised by Professor Lung-Pen Cheng.\n\nMy practice spans human–food interaction, extended reality, and LLM-supported creative systems. Outside research, I enjoy home cooking and mixology as personal ways to explore flavor, memory, and culture.\n\nWebsite: pillowlowchen.com"
+        "body": "I'm Po-Yu Chen (pillow) — a master's student at NTU's Graduate Institute of Networking and Multimedia. My research sits at the intersection of HCI and human–food interaction: I'm interested in how human-in-the-loop systems can make subjective taste perception a first-class part of computational systems — turning personal flavor experience into something that can be articulated, shared, and built upon. I'm also a designer and artist, and I'm always open to interdisciplinary collaboration — workshops, exhibitions, and research."
       }
     },
     "portfolio": {
@@ -58,7 +58,7 @@
       },
       "about": {
         "title": "關於我",
-        "body": "我是陳柏宇（pillow）——一位 HCI 研究者、創意科技工作者與藝術家，現居台灣台北。\n\n我畢業於國立清華大學藝術與科技學系，取得藝術學士（B.F.A.）。目前就讀國立台灣大學網路與多媒體研究所（GINM）碩士二年級，指導教授為彭龍斌老師。\n\n我的實踐涵蓋人類–食物互動、延展實境（XR），以及大型語言模型支援的創意系統。研究之外，我喜歡在家烹飪與調酒，作為探索風味、記憶與文化的個人方式。\n\n網站：pillowlowchen.com"
+        "body": "我是陳柏諭（pillow）——國立台灣大學網路與多媒體研究所碩士生。我的研究聚焦於 HCI 與人類–食物互動的交叉地帶：探索如何透過人在迴路（human-in-the-loop）系統，將人類主觀的味覺感知納入計算系統——使個人的風味經驗得以被表達、傳遞與累積。我同時也是一位設計師與藝術家，歡迎任何形式的跨領域合作機會，包括工作坊、展覽與研究。"
       }
     },
     "portfolio": {
