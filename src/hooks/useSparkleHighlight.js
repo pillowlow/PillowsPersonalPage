@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { theme } from '../theme';
+import usePrefersReducedMotion from './usePrefersReducedMotion';
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -17,12 +18,13 @@ function pickRandomIndices(indices, count) {
   return shuffled.slice(0, Math.min(count, shuffled.length));
 }
 
-function buildHighlightMap(text, count, highlightColor) {
+function buildHighlightMap(text, count, highlightColors, highlightColor) {
   const eligible = getEligibleIndices(text);
   const selected = pickRandomIndices(eligible, count);
   const map = new Map();
   selected.forEach((index) => {
-    map.set(index, highlightColor);
+    const colors = highlightColors.length > 0 ? highlightColors : [highlightColor];
+    map.set(index, colors[randomInt(0, colors.length - 1)] ?? highlightColor);
   });
   return map;
 }
@@ -40,9 +42,13 @@ function pickNextFrameThreshold(config) {
 }
 
 export function useSparkleHighlight(text, options = {}) {
-  const sparkle = { ...theme.sparkle, ...options };
+  const sparkle = useMemo(() => ({ ...theme.sparkle, ...options }), [options]);
   const highlightColor = sparkle.highlightColor ?? '#FFFFFF';
+  const highlightColors = sparkle.highlightColors ?? theme.sparkle.highlightColors ?? [];
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const reducedMotion = options.reducedMotion ?? prefersReducedMotion;
   const [highlightMap, setHighlightMap] = useState(() => new Map());
+  const colorMapRef = useRef(new Map());
   const framesUntilUpdateRef = useRef(0);
   const rafRef = useRef(null);
 
@@ -51,8 +57,21 @@ export function useSparkleHighlight(text, options = {}) {
   useEffect(() => {
     const refresh = () => {
       const n = pickHighlightCount(sparkle);
-      setHighlightMap(buildHighlightMap(textKey, n, highlightColor));
-      framesUntilUpdateRef.current = pickNextFrameThreshold(sparkle);
+      const nextMap = buildHighlightMap(textKey, n, highlightColors, highlightColor);
+      colorMapRef.current = nextMap;
+      setHighlightMap(nextMap);
+
+      const minFrame = reducedMotion
+        ? (sparkle.frameIntervalMin ?? 2) * 4
+        : sparkle.frameIntervalMin;
+      const maxFrame = reducedMotion
+        ? (sparkle.frameIntervalMax ?? 7) * 4
+        : sparkle.frameIntervalMax;
+      framesUntilUpdateRef.current = pickNextFrameThreshold({
+        ...sparkle,
+        frameIntervalMin: minFrame,
+        frameIntervalMax: maxFrame,
+      });
     };
 
     refresh();
@@ -72,7 +91,17 @@ export function useSparkleHighlight(text, options = {}) {
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [textKey, highlightColor, sparkle.count, sparkle.countMin, sparkle.countMax, sparkle.frameIntervalMin, sparkle.frameIntervalMax]);
+  }, [
+    textKey,
+    highlightColor,
+    highlightColors,
+    sparkle.count,
+    sparkle.countMin,
+    sparkle.countMax,
+    sparkle.frameIntervalMin,
+    sparkle.frameIntervalMax,
+    reducedMotion,
+  ]);
 
-  return highlightMap;
+  return { highlightMap, colorMapRef };
 }

@@ -22,7 +22,9 @@ export const theme = {
   },
   fonts: {
     body: '"Inter", system-ui, -apple-system, sans-serif',
-    mono: '"IBM Plex Mono", "Cascadia Code", "Consolas", monospace',
+    display: '"Silkscreen", "DotGothic16", monospace',
+    hud: '"VT323", "DotGothic16", monospace',
+    mono: '"VT323", "IBM Plex Mono", "Cascadia Code", "Consolas", monospace',
     titleLetterSpacing: '0.14em',
     projectsTitleLetterSpacing: '0.22em',
   },
@@ -43,14 +45,11 @@ export const theme = {
   layout: {
     maxWidth: '1200px',
     desktopBreakpoint: '768px',
-    playgroundColumnRatio: '0.42',
     strokeWidth: '1px',
     radiusDefault: '0',
     radiusPortrait: '50%',
   },
   components: {
-    playgroundMinHeight: 'clamp(280px, 40vh, 420px)',
-    upperSectionMinHeight: '90vh',
     portfolioPortraitMinSizeMobile: '33.333vw',
     portfolioPortraitMinSizeDesktop: '33.333vh',
     projectImageAspectRatio: '3 / 2',
@@ -64,7 +63,84 @@ export const theme = {
     countMax: 18,
     frameIntervalMin: 10,
     frameIntervalMax: 20,
+    highlightColors: PALETTE_COLORS,
     highlightColor: '#FFFFFF',
+  },
+  glow: {
+    blur: '0.7rem',
+    spread: '0.18rem',
+    scanlineSize: '0.22rem',
+    scanlineOpacity: 0.14,
+    bleed: '1.2rem',
+    flickerMs: 1400,
+  },
+  home: {
+    buttonMinHeight: 'clamp(4.5rem, 10vw, 7rem)',
+    stackMaxWidth: 'min(88vw, 30rem)',
+    stackGap: 'clamp(0.7rem, 2vw, 1.25rem)',
+    buttonSparkle: {
+      count: 8,
+      countMin: 4,
+      countMax: 12,
+      frameIntervalMin: 45,
+      frameIntervalMax: 90,
+    },
+  },
+  game: {
+    pixelScale: 3,
+    fixedStep: 1 / 120,
+    piece: {
+      radius: 9,
+      sidesMin: 3,
+      sidesMax: 6,
+    },
+    physics: {
+      friction: 0.995,
+      restitution: 0.86,
+      substeps: 4,
+      maxDt: 1 / 30,
+      restSpeed: 12,
+    },
+    launch: {
+      origin: 'bottom-center',
+      speedMax: 680,
+    },
+    holes: [
+      { color: 'publications', edge: 'top', t: 0.16 },
+      { color: 'firstAuthors', edge: 'top', t: 0.72 },
+      { color: 'artworks', edge: 'left', t: 0.42 },
+      { color: 'competitions', edge: 'right', t: 0.32 },
+      { color: 'others', edge: 'right', t: 0.78 },
+    ],
+    scoring: {
+      match: 10,
+      comboStep: 1,
+      wrongHole: 0,
+    },
+    presets: {
+      casual: {
+        restitution: 0.9,
+        holeRadiusMultiplier: 1.8,
+        aimBounces: 2,
+        maxShots: 3,
+        timeScale: 0.82,
+        magnetStrength: 0.012,
+      },
+      normal: {
+        restitution: 0.86,
+        holeRadiusMultiplier: 1.35,
+        aimBounces: 0,
+        maxShots: 2,
+        timeScale: 1,
+        magnetStrength: 0,
+      },
+    },
+    monster: {
+      enabled: false,
+      atlasUrl: '/assets/playground/monster_atlas.png',
+      cols: 2,
+      rows: 2,
+    },
   },
 };
 
@@ -83,6 +159,8 @@ export function applyThemeToDocument(t = theme) {
   root.style.setProperty('--color-button-text', colors.buttonText);
 
   root.style.setProperty('--font-body', fonts.body);
+  root.style.setProperty('--font-display', fonts.display);
+  root.style.setProperty('--font-hud', fonts.hud);
   root.style.setProperty('--font-mono', fonts.mono);
   root.style.setProperty('--title-letter-spacing', fonts.titleLetterSpacing);
   root.style.setProperty('--projects-title-letter-spacing', fonts.projectsTitleLetterSpacing);
@@ -100,13 +178,10 @@ export function applyThemeToDocument(t = theme) {
 
   root.style.setProperty('--max-width', layout.maxWidth);
   root.style.setProperty('--breakpoint-desktop', layout.desktopBreakpoint);
-  root.style.setProperty('--playground-column-ratio', layout.playgroundColumnRatio);
   root.style.setProperty('--stroke-width', layout.strokeWidth);
   root.style.setProperty('--radius-default', layout.radiusDefault);
   root.style.setProperty('--radius-portrait', layout.radiusPortrait);
 
-  root.style.setProperty('--playground-min-height', components.playgroundMinHeight);
-  root.style.setProperty('--upper-section-min-height', components.upperSectionMinHeight);
   root.style.setProperty('--portfolio-portrait-min-size-mobile', components.portfolioPortraitMinSizeMobile);
   root.style.setProperty('--portfolio-portrait-min-size-desktop', components.portfolioPortraitMinSizeDesktop);
 
@@ -122,4 +197,21 @@ export function applyThemeToDocument(t = theme) {
   root.style.setProperty('--project-image-aspect-ratio', components.projectImageAspectRatio);
   root.style.setProperty('--icon-size', components.iconSize);
   root.style.setProperty('--projects-bar-height', components.projectsBarHeight);
+
+  const glow = t.glow ?? {};
+  root.style.setProperty('--glow-blur', glow.blur ?? '0.7rem');
+  root.style.setProperty('--glow-spread', glow.spread ?? '0.18rem');
+  root.style.setProperty('--glow-scanline-size', glow.scanlineSize ?? '0.22rem');
+  root.style.setProperty('--glow-scanline-opacity', String(glow.scanlineOpacity ?? 0.14));
+  root.style.setProperty('--glow-bleed', glow.bleed ?? '1.2rem');
+  root.style.setProperty('--glow-flicker-ms', `${glow.flickerMs ?? 1400}ms`);
+
+  const home = t.home ?? {};
+  root.style.setProperty('--home-button-min-height', home.buttonMinHeight ?? '4.5rem');
+  root.style.setProperty('--home-stack-max-width', home.stackMaxWidth ?? 'min(88vw, 30rem)');
+  root.style.setProperty('--home-stack-gap', home.stackGap ?? '1rem');
+
+  const game = t.game ?? {};
+  root.style.setProperty('--game-pixel-scale', String(game.pixelScale ?? 3));
+  root.style.setProperty('--game-piece-radius', `${game.piece?.radius ?? 9}px`);
 }

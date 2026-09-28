@@ -5,6 +5,41 @@
       "mainContent": "About me / Mission & Vision",
       "language": "EN/中"
     },
+    "nav": {
+      "intro": "Intro",
+      "accounts": "Accounts",
+      "demos": "Online demos",
+      "works": "Works",
+      "back": "Back to home"
+    },
+    "home": {
+      "hint": "Tap empty space to shoot · match the blinking colors",
+      "empty": "Tap or drag on empty space to launch a color piece."
+    },
+    "pages": {
+      "intro": {
+        "title": "Intro"
+      },
+      "accounts": {
+        "title": "Accounts",
+        "empty": "No account links have been added yet."
+      },
+      "demos": {
+        "title": "Online demos",
+        "empty": "Online demos are being prepared."
+      },
+      "works": {
+        "title": "Works"
+      }
+    },
+    "hud": {
+      "score": "Score",
+      "combo": "Combo",
+      "easy": "Easy",
+      "pro": "Pro",
+      "match": "Matched",
+      "miss": "Miss"
+    },
     "sections": {
       "projects": "Projects",
       "filter": "Filter"
@@ -22,20 +57,12 @@
     "portfolio": {
       "alt": "Portrait"
     },
-    "links": {
-      "email": "mailto:tmps9930613@gmail.com",
-      "instagram": "https://instagram.com/"
-    },
     "filters": {
       "publications": "Publications",
       "firstAuthors": "First authors",
       "artworks": "Art works",
       "competitions": "Competitions",
       "others": "Others"
-    },
-    "slider": {
-      "data": "data",
-      "experience": "experience"
     },
     "projectCard": {
       "clickNextImage": "Click for next image"
@@ -46,6 +73,41 @@
     "switchers": {
       "mainContent": "關於我 / 使命與願景",
       "language": "EN/中"
+    },
+    "nav": {
+      "intro": "介紹",
+      "accounts": "帳號",
+      "demos": "線上展示",
+      "works": "作品",
+      "back": "回到首頁"
+    },
+    "home": {
+      "hint": "點擊空白處射擊 · 對準閃爍的顏色",
+      "empty": "點擊或拖曳空白處發射色彩方塊。"
+    },
+    "pages": {
+      "intro": {
+        "title": "介紹"
+      },
+      "accounts": {
+        "title": "帳號",
+        "empty": "目前還沒有新增帳號連結。"
+      },
+      "demos": {
+        "title": "線上展示",
+        "empty": "線上展示正在準備中。"
+      },
+      "works": {
+        "title": "作品"
+      }
+    },
+    "hud": {
+      "score": "分數",
+      "combo": "連擊",
+      "easy": "簡單",
+      "pro": "進階",
+      "match": "命中",
+      "miss": "失誤"
     },
     "sections": {
       "projects": "專案",
@@ -64,20 +126,12 @@
     "portfolio": {
       "alt": "個人照片"
     },
-    "links": {
-      "email": "mailto:tmps9930613@gmail.com",
-      "instagram": "https://instagram.com/"
-    },
     "filters": {
       "publications": "出版",
       "firstAuthors": "第一作者",
       "artworks": "藝術作品",
       "competitions": "競賽與工作坊",
       "others": "其他"
-    },
-    "slider": {
-      "data": "資料",
-      "experience": "體驗"
     },
     "projectCard": {
       "clickNextImage": "點擊切換下一張圖"

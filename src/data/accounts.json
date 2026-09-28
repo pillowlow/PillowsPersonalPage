@@ -1,0 +1,20 @@
+[
+  {
+    "id": "email",
+    "labelEn": "Email",
+    "labelZh": "電子郵件",
+    "handle": "tmps9930613@gmail.com",
+    "href": "mailto:tmps9930613@gmail.com",
+    "icon": "/assets/icons/ic_outline-email.svg",
+    "showOnIntro": true
+  },
+  {
+    "id": "instagram",
+    "labelEn": "Instagram",
+    "labelZh": "Instagram",
+    "handle": "@pillow",
+    "href": "https://instagram.com/",
+    "icon": "/assets/icons/mdi_instagram.svg",
+    "showOnIntro": true
+  }
+]

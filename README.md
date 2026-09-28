@@ -5,7 +5,7 @@ A responsive personal portfolio built with React and Vite, deployable to GitHub 
 ## Tech stack
 
 - React 18 + Vite
-- p5.js via `@p5-wrapper/react` (playground placeholder sketch)
+- Canvas 2D custom game loop (no runtime game dependency)
 - Plain CSS with variables from `theme.js`
 
 ## Local development
@@ -26,7 +26,11 @@ Open the URL Vite prints. Example: `http://localhost:5173/`.
 │   ├── theme.js         # Design tokens → CSS variables
 │   ├── data/
 │   │   ├── site.json    # Bilingual UI copy (not project bodies)
+│   │   ├── accounts.json
+│   │   ├── demos.json
 │   │   └── projects.json
+│   ├── game/             # Physics, rendering, and fixed-timestep game loop
+│   ├── pages/            # Hash-routed Home, Intro, Accounts, Demos, Works
 │   ├── components/
 │   └── styles/global.css
 └── vite.config.js       # base path for GitHub Pages
@@ -36,7 +40,11 @@ Open the URL Vite prints. Example: `http://localhost:5173/`.
 
 ### Site copy (`src/data/site.json`)
 
-Update `en` and `zh` sections: mission/about text, button labels, filter labels, email (`mailto:`), and Instagram URL.
+Update `en` and `zh` sections: mission/about text, navigation labels, HUD labels, and filter labels.
+
+Account links live in `src/data/accounts.json`; online demos live in
+`src/data/demos.json`. The home page uses hash routes (`#/intro`, `#/accounts`,
+`#/demos`, and `#/works`) so links remain compatible with GitHub Pages.
 
 ### Projects (`src/data/projects.json`)
 
@@ -72,5 +80,6 @@ npm run build
 
 ## Future work
 
-- Implement interactive p5 playground (drag circle, visuals)
-- Wire the digital/perceptual slider to sketch parameters
+- Add the 2×2 monster sprite atlas to `public/assets/playground/` and enable
+  the reserved renderer hook in `src/game/render.js`.
+- Add real online demo records to `src/data/demos.json`.
