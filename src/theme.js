@@ -8,6 +8,15 @@ export const palette = {
 
 export const PALETTE_COLORS = Object.values(palette);
 
+const paletteKeyByColor = new Map(
+  Object.entries(palette).map(([key, value]) => [String(value).toLowerCase(), key]),
+);
+
+export function getPaletteKey(color) {
+  if (!color) return null;
+  return paletteKeyByColor.get(String(color).toLowerCase()) ?? null;
+}
+
 export const theme = {
   colors: {
     bg: '#1E1E1E',
@@ -79,9 +88,8 @@ export const theme = {
     stackMaxWidth: 'min(88vw, 30rem)',
     stackGap: 'clamp(0.7rem, 2vw, 1.25rem)',
     buttonSparkle: {
-      count: 8,
-      countMin: 4,
-      countMax: 12,
+      whiteRatio: 0.35,
+      minWhite: 1,
       frameIntervalMin: 45,
       frameIntervalMax: 90,
     },
@@ -93,6 +101,8 @@ export const theme = {
       radius: 9,
       sidesMin: 3,
       sidesMax: 6,
+      lifetimeMs: 60000,
+      burstMs: 320,
     },
     physics: {
       friction: 0.995,
@@ -103,7 +113,9 @@ export const theme = {
     },
     launch: {
       origin: 'bottom-center',
-      speedMax: 680,
+      speedMin: 520,
+      speedMax: 1200,
+      cooldownMs: 2000,
     },
     holes: [
       { color: 'publications', edge: 'top', t: 0.16 },
@@ -115,25 +127,14 @@ export const theme = {
     scoring: {
       match: 10,
       comboStep: 1,
-      wrongHole: 0,
+      wrongHole: -5,
     },
-    presets: {
-      casual: {
-        restitution: 0.9,
-        holeRadiusMultiplier: 1.8,
-        aimBounces: 2,
-        maxShots: 3,
-        timeScale: 0.82,
-        magnetStrength: 0.012,
-      },
-      normal: {
-        restitution: 0.86,
-        holeRadiusMultiplier: 1.35,
-        aimBounces: 0,
-        maxShots: 2,
-        timeScale: 1,
-        magnetStrength: 0,
-      },
+    play: {
+      restitution: 0.9,
+      holeRadiusMultiplier: 1.6,
+      aimBounces: 1,
+      timeScale: 1,
+      magnetStrength: 0.01,
     },
     monster: {
       enabled: false,

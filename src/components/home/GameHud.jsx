@@ -4,8 +4,8 @@ export default function GameHud({
   score = 0,
   combo = 0,
   lastEvent,
-  preset = 'casual',
-  onPresetChange,
+  letters = 0,
+  debugLine = '',
 }) {
   const content = useSiteContent();
   const eventLabel =
@@ -24,25 +24,11 @@ export default function GameHud({
         <span>
           {content.hud.combo}: <strong>{combo}</strong>
         </span>
+        <span>
+          Letters: <strong>{letters}</strong>
+        </span>
         {eventLabel && <span className="game-hud__event">{eventLabel}</span>}
-      </div>
-      <div className="game-hud__controls" role="group" aria-label="Game difficulty">
-        <button
-          type="button"
-          className={`game-hud__button ${preset === 'casual' ? 'is-active' : ''}`}
-          aria-pressed={preset === 'casual'}
-          onClick={() => onPresetChange?.('casual')}
-        >
-          {content.hud.easy}
-        </button>
-        <button
-          type="button"
-          className={`game-hud__button ${preset === 'normal' ? 'is-active' : ''}`}
-          aria-pressed={preset === 'normal'}
-          onClick={() => onPresetChange?.('normal')}
-        >
-          {content.hud.pro}
-        </button>
+        {debugLine && <span className="game-hud__event">{debugLine}</span>}
       </div>
     </div>
   );

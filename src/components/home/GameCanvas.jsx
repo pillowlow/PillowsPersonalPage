@@ -3,7 +3,7 @@ import { createGame } from '../../game/createGame';
 import { theme } from '../../theme';
 import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion';
 
-export default function GameCanvas({ registry, preset = 'casual', onHud }) {
+export default function GameCanvas({ registry, onHud }) {
   const canvasRef = useRef(null);
   const gameRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -17,6 +17,7 @@ export default function GameCanvas({ registry, preset = 'casual', onHud }) {
       canvas,
       config: theme.game,
       getColliders: registry.getColliders,
+      remeasure: registry.remeasure,
       getCharColor: registry.getCharColor,
       onEvent: onHud,
       reducedMotion: prefersReducedMotion,
@@ -38,7 +39,6 @@ export default function GameCanvas({ registry, preset = 'casual', onHud }) {
         : null;
     resizeObserver?.observe(canvas.parentElement ?? canvas);
     resize();
-    game.setPreset(preset);
     game.start();
 
     return () => {
@@ -48,10 +48,6 @@ export default function GameCanvas({ registry, preset = 'casual', onHud }) {
       registry.setCanvasElement(null);
     };
   }, [onHud, prefersReducedMotion, registry]);
-
-  useEffect(() => {
-    gameRef.current?.setPreset(preset);
-  }, [preset]);
 
   useEffect(() => {
     gameRef.current?.setReducedMotion(prefersReducedMotion);

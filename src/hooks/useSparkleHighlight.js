@@ -35,6 +35,19 @@ function pickHighlightCount(config) {
   return randomInt(min, max);
 }
 
+function pickColoredCount(text, config) {
+  const total = getEligibleIndices(text).length;
+  if (config.whiteRatio == null) return pickHighlightCount(config);
+  if (total <= 1) return total;
+
+  const minWhite = config.minWhite ?? 1;
+  const whiteCount = Math.min(
+    total - 1,
+    Math.max(minWhite, Math.round(total * config.whiteRatio)),
+  );
+  return total - whiteCount;
+}
+
 function pickNextFrameThreshold(config) {
   const min = config.frameIntervalMin ?? 2;
   const max = config.frameIntervalMax ?? 7;
@@ -56,7 +69,7 @@ export function useSparkleHighlight(text, options = {}) {
 
   useEffect(() => {
     const refresh = () => {
-      const n = pickHighlightCount(sparkle);
+      const n = pickColoredCount(textKey, sparkle);
       const nextMap = buildHighlightMap(textKey, n, highlightColors, highlightColor);
       colorMapRef.current = nextMap;
       setHighlightMap(nextMap);
@@ -98,6 +111,8 @@ export function useSparkleHighlight(text, options = {}) {
     sparkle.count,
     sparkle.countMin,
     sparkle.countMax,
+    sparkle.whiteRatio,
+    sparkle.minWhite,
     sparkle.frameIntervalMin,
     sparkle.frameIntervalMax,
     reducedMotion,

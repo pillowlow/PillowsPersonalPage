@@ -51,6 +51,56 @@ export function circleRectCollision(circle, rect) {
   };
 }
 
+export function getLauncherOrigin(width, height, radius) {
+  return {
+    x: width / 2,
+    y: height - Math.max(radius * 2.5, 24),
+  };
+}
+
+export function circleCircleCollision(a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const radius = a.radius + b.radius;
+  const distanceSq = dx * dx + dy * dy;
+
+  if (distanceSq >= radius * radius) return null;
+
+  if (distanceSq > 0.000001) {
+    const distance = Math.sqrt(distanceSq);
+    return {
+      normal: { x: dx / distance, y: dy / distance },
+      depth: radius - distance,
+    };
+  }
+
+  return {
+    normal: { x: 1, y: 0 },
+    depth: radius,
+  };
+}
+
+export function sweepCircleRect(from, to, radius, rect) {
+  const startHit = circleRectCollision({ x: from.x, y: from.y, radius }, rect);
+  if (startHit) return { ...startHit, x: from.x, y: from.y };
+
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const distance = Math.hypot(dx, dy);
+  const step = Math.max(radius * 0.75, 4);
+  const steps = Math.max(1, Math.ceil(distance / step));
+
+  for (let index = 1; index <= steps; index += 1) {
+    const t = index / steps;
+    const x = from.x + dx * t;
+    const y = from.y + dy * t;
+    const hit = circleRectCollision({ x, y, radius }, rect);
+    if (hit) return { ...hit, x, y };
+  }
+
+  return null;
+}
+
 export function reflectVelocity(velocity, normal, restitution = 1) {
   const dot = velocity.x * normal.x + velocity.y * normal.y;
   if (dot >= 0) return velocity;

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { gameLog } from '../game/gameLog';
+import { getPaletteKey } from '../theme';
 
 function toLocalRect(rect, baseRect) {
   return {
@@ -9,6 +11,16 @@ function toLocalRect(rect, baseRect) {
   };
 }
 
+function normalizeCssColor(color) {
+  if (!color) return null;
+  const value = color.trim().toLowerCase();
+  if (value.startsWith('#')) return value;
+  const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (!match) return null;
+  const channel = (channelValue) => Number(channelValue).toString(16).padStart(2, '0');
+  return `#${channel(match[1])}${channel(match[2])}${channel(match[3])}`;
+}
+
 export default function useColliderRegistry() {
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
@@ -17,43 +29,75 @@ export default function useColliderRegistry() {
   const colorsRef = useRef(new Map());
   const snapshotRef = useRef({ version: 0, buttons: [] });
   const measureFrameRef = useRef(null);
+  const measureSignatureRef = useRef('');
 
   const measure = useCallback(() => {
     measureFrameRef.current = null;
 
     const baseElement = canvasRef.current ?? rootRef.current;
     const baseRect = baseElement?.getBoundingClientRect();
-    if (!baseRect) return;
+    const root = rootRef.current ?? baseElement?.parentElement;
+    if (!baseRect || !root) return;
 
-    const buttons = [...buttonElementsRef.current.entries()]
-      .map(([id, element]) => {
-        if (!element) return null;
+    const grouped = new Map();
+    root.querySelectorAll('[data-collider-key]').forEach((node) => {
+      const key = node.getAttribute('data-collider-key');
+      if (!key) return;
+      const colorKey = getPaletteKey(normalizeCssColor(node.style.color));
+      if (!colorKey) return;
 
-        const buttonRect = element.getBoundingClientRect();
-        const chars = [...characterElementsRef.current.entries()]
-          .filter(([key]) => key.startsWith(`${id}:`))
-          .map(([key, charElement]) => {
-            const rect = charElement.getBoundingClientRect();
-            return {
-              key,
-              index: Number(key.slice(key.lastIndexOf(':') + 1)),
-              ...toLocalRect(rect, baseRect),
-            };
-          })
-          .filter((char) => char.w > 0 && char.h > 0);
+      const id = key.slice(0, key.lastIndexOf(':')) || 'text';
+      const buttonElement = node.closest('a') ?? node.parentElement;
+      const rect = node.getBoundingClientRect();
+      const local = toLocalRect(rect, baseRect);
+      const pad = 3;
+      const char = {
+        key,
+        colorKey,
+        index: Number(key.slice(key.lastIndexOf(':') + 1)),
+        x: local.x - pad,
+        y: local.y - pad,
+        w: local.w + pad * 2,
+        h: local.h + pad * 2,
+      };
+      if (char.w <= 0 || char.h <= 0) return;
 
-        return {
-          id,
-          rect: toLocalRect(buttonRect, baseRect),
-          chars,
-        };
-      })
-      .filter(Boolean);
+      const group = grouped.get(id) ?? { element: buttonElement, chars: [] };
+      group.chars.push(char);
+      grouped.set(id, group);
+    });
+
+    const buttons = [...grouped.entries()].map(([id, group]) => {
+      const buttonRect = group.element?.getBoundingClientRect();
+      return {
+        id,
+        rect: buttonRect ? toLocalRect(buttonRect, baseRect) : { x: 0, y: 0, w: 0, h: 0 },
+        chars: group.chars,
+      };
+    });
 
     snapshotRef.current = {
       version: snapshotRef.current.version + 1,
       buttons,
     };
+    const colored = buttons.reduce((sum, button) => sum + button.chars.length, 0);
+    if (typeof window !== 'undefined') window.__gameLetters = colored;
+    const signature = buttons.map((button) => `${button.id}:${button.chars.length}`).join('|');
+    if (signature !== measureSignatureRef.current) {
+      measureSignatureRef.current = signature;
+      gameLog('measured colliders', {
+        version: snapshotRef.current.version,
+        canvas: `${Math.round(baseRect.width)}x${Math.round(baseRect.height)}`,
+        colored,
+        buttons: buttons.map((button) => ({
+          id: button.id,
+          colored: button.chars.length,
+          sample: button.chars.slice(0, 2).map((char) => (
+            `${char.colorKey}@${Math.round(char.x)},${Math.round(char.y)} ${Math.round(char.w)}x${Math.round(char.h)}`
+          )),
+        })),
+      });
+    }
   }, []);
 
   const scheduleMeasure = useCallback(() => {
@@ -109,7 +153,8 @@ export default function useColliderRegistry() {
     } else {
       colorsRef.current.delete(key);
     }
-  }, []);
+    scheduleMeasure();
+  }, [scheduleMeasure]);
 
   const getColliders = useCallback(() => snapshotRef.current, []);
 
@@ -151,7 +196,8 @@ export default function useColliderRegistry() {
       setColor,
       getColliders,
       getCharColor,
+      remeasure: measure,
     }),
-    [getCharColor, getColliders, register, registerButton, setCanvasElement, setColor, unregister],
+    [getCharColor, getColliders, measure, register, registerButton, setCanvasElement, setColor, unregister],
   );
 }

@@ -1,4 +1,4 @@
-import { getHoleCenter, getPolygonVertices, normalize } from './physics';
+import { getHoleCenter, getLauncherOrigin, getPolygonVertices, normalize } from './physics';
 
 function drawPixelGrid(context, width, height) {
   context.save();
@@ -40,23 +40,72 @@ function drawHole(context, center, radius, color) {
   context.restore();
 }
 
-function drawLauncher(context, width, height, radius) {
-  const x = width / 2;
-  const y = height - Math.max(radius * 2.5, 24);
+function drawPoolSpot(context, state, config) {
+  const { x, y } = getLauncherOrigin(state.width, state.height, config.piece.radius);
+  const spotRadius = config.piece.radius * 1.35;
+  const cooldownMs = config.launch.cooldownMs ?? 2000;
+  const elapsed = state.lastLaunchAt == null
+    ? cooldownMs
+    : performance.now() - state.lastLaunchAt;
+  const ready = elapsed >= cooldownMs;
+  const progress = ready ? 1 : Math.max(0, Math.min(1, elapsed / cooldownMs));
 
   context.save();
   context.strokeStyle = '#F4F4F4';
-  context.fillStyle = '#333333';
-  context.lineWidth = 2;
+  context.fillStyle = ready ? 'rgba(244, 244, 244, 0.38)' : 'rgba(244, 244, 244, 0.12)';
+  context.lineWidth = 1.5;
   context.beginPath();
-  context.rect(x - 18, y + 8, 36, 11);
+  context.arc(x, y, spotRadius, 0, Math.PI * 2);
   context.fill();
   context.stroke();
-  context.beginPath();
-  context.moveTo(x, y + 8);
-  context.lineTo(x, y - 13);
-  context.stroke();
+
+  if (!ready) {
+    context.beginPath();
+    context.strokeStyle = '#F6B80E';
+    context.lineWidth = 2;
+    context.arc(
+      x,
+      y,
+      spotRadius + 4,
+      -Math.PI / 2,
+      -Math.PI / 2 + progress * Math.PI * 2,
+    );
+    context.stroke();
+  }
   context.restore();
+}
+
+function drawBursts(context, state, config, palette) {
+  const now = performance.now();
+  const burstMs = config.piece.burstMs ?? 320;
+
+  state.bursts.forEach((burst) => {
+    const t = (now - burst.bornAt) / burstMs;
+    if (t < 0 || t > 1) return;
+
+    const color = burst.colorKey ? palette[burst.colorKey] : '#F4F4F4';
+    const radius = config.piece.radius * (1.2 + t * 2.8);
+
+    context.save();
+    context.globalAlpha = 1 - t;
+    context.strokeStyle = color;
+    context.fillStyle = color;
+    context.lineWidth = 1.5;
+    context.beginPath();
+    context.arc(burst.x, burst.y, radius, 0, Math.PI * 2);
+    context.stroke();
+
+    for (let index = 0; index < 6; index += 1) {
+      const angle = (Math.PI * 2 * index) / 6;
+      const inner = radius * 0.35;
+      const outer = radius * 1.15;
+      context.beginPath();
+      context.moveTo(burst.x + Math.cos(angle) * inner, burst.y + Math.sin(angle) * inner);
+      context.lineTo(burst.x + Math.cos(angle) * outer, burst.y + Math.sin(angle) * outer);
+      context.stroke();
+    }
+    context.restore();
+  });
 }
 
 function drawAimGuide(context, aiming, state, config, color) {
@@ -68,10 +117,8 @@ function drawAimGuide(context, aiming, state, config, color) {
   );
   if (direction.x === 0 && direction.y === 0) return;
 
-  if (direction.y > -0.12) direction.y = -0.12;
-  const adjustedDirection = normalize(direction.x, direction.y);
-  const preset = config.presets[state.presetName] ?? config.presets.casual;
-  const maxBounces = preset.aimBounces ?? 0;
+  const adjustedDirection = direction;
+  const maxBounces = config.play?.aimBounces ?? 0;
   const radius = config.piece.radius;
   let start = { ...aiming.origin };
   let remaining = Math.max(state.width, state.height) * 1.5;
@@ -145,6 +192,19 @@ function drawPiece(context, piece, palette) {
   context.restore();
 }
 
+function drawColliderDebug(context, state) {
+  const buttons = state.colliders?.buttons ?? [];
+  context.save();
+  context.strokeStyle = '#00E5FF';
+  context.lineWidth = 1;
+  buttons.forEach((button) => {
+    button.chars.forEach((char) => {
+      context.strokeRect(char.x, char.y, char.w, char.h);
+    });
+  });
+  context.restore();
+}
+
 function drawMonster(context, state, config) {
   if (!config.monster?.enabled || !config.monster.atlasUrl) return;
   // Reserved for the future 2x2 atlas generated from the supplied monster reference.
@@ -165,9 +225,11 @@ export function drawGame(context, state, config, palette) {
     drawHole(context, center, config.piece.radius * 1.8, palette[hole.color]);
   });
 
-  drawLauncher(context, width, height, config.piece.radius);
+  drawColliderDebug(context, state);
+  drawPoolSpot(context, state, config);
   drawAimGuide(context, state.aiming, state, config, '#F4F4F4');
   state.pieces.forEach((piece) => drawPiece(context, piece, palette));
+  drawBursts(context, state, config, palette);
   drawMonster(context, state, config);
   context.restore();
 }

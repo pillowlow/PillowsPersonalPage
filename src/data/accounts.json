@@ -6,7 +6,7 @@
     "handle": "tmps9930613@gmail.com",
     "href": "mailto:tmps9930613@gmail.com",
     "icon": "/assets/icons/ic_outline-email.svg",
-    "showOnIntro": true
+    "showOnIntro": false
   },
   {
     "id": "instagram",
@@ -15,6 +15,6 @@
     "handle": "@pillow",
     "href": "https://instagram.com/",
     "icon": "/assets/icons/mdi_instagram.svg",
-    "showOnIntro": true
+    "showOnIntro": false
   }
 ]

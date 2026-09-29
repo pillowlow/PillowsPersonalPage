@@ -1,18 +1,17 @@
-import { palette, theme } from '../theme';
+import { getPaletteKey, palette, theme } from '../theme';
 import {
+  circleCircleCollision,
   circleRectCollision,
   clamp,
   distanceSquared,
   getHoleCenter,
+  getLauncherOrigin,
   normalize,
   reflectVelocity,
+  sweepCircleRect,
 } from './physics';
+import { gameLog } from './gameLog';
 import { drawGame } from './render';
-
-const paletteKeys = Object.keys(palette);
-const colorToKey = new Map(
-  paletteKeys.map((key) => [String(palette[key]).toLowerCase(), key]),
-);
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -26,20 +25,16 @@ function mergeGameConfig(overrides = {}) {
     physics: { ...theme.game.physics, ...overrides.physics },
     launch: { ...theme.game.launch, ...overrides.launch },
     scoring: { ...theme.game.scoring, ...overrides.scoring },
-    presets: { ...theme.game.presets, ...overrides.presets },
+    play: { ...theme.game.play, ...overrides.play },
     monster: { ...theme.game.monster, ...overrides.monster },
   };
-}
-
-function getColorKey(color) {
-  if (!color) return null;
-  return colorToKey.get(String(color).toLowerCase()) ?? null;
 }
 
 export function createGame({
   canvas,
   config: configOverrides,
   getColliders,
+  remeasure,
   getCharColor,
   onEvent,
   reducedMotion = false,
@@ -51,11 +46,14 @@ export function createGame({
     height: 1,
     dpr: 1,
     pieces: [],
+    bursts: [],
     aiming: null,
+    lastLaunchAt: null,
+    nextPieceId: 1,
+    loggedLetters: -1,
     colliders: { version: -1, buttons: [] },
     score: 0,
     combo: 0,
-    presetName: 'casual',
     paused: false,
     hidden: false,
   };
@@ -69,16 +67,20 @@ export function createGame({
   let isReducedMotion = reducedMotion;
 
   function getPreset() {
-    return config.presets[state.presetName] ?? config.presets.casual;
+    return config.play;
   }
 
   function emit(type, extra = {}) {
-    onEvent?.({
+    const payload = {
       type,
       score: state.score,
       combo: state.combo,
       ...extra,
-    });
+    };
+    if (type === 'match' || type === 'miss') {
+      payload.lastEvent = { type, ...extra };
+    }
+    onEvent?.(payload);
   }
 
   function draw() {
@@ -96,26 +98,51 @@ export function createGame({
     scheduleFrame();
   }
 
+  function syncBoardSize() {
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
+    const dpr = window.devicePixelRatio || 1;
+    if (
+      Math.abs(width - state.width) > 0.5
+      || Math.abs(height - state.height) > 0.5
+      || Math.abs(dpr - state.dpr) > 0.01
+    ) {
+      resize({ width, height, dpr });
+    }
+  }
+
   function updateColliders() {
+    syncBoardSize();
+    remeasure?.();
     const next = getColliders?.();
-    if (next && next.version !== state.colliders.version) {
-      state.colliders = next;
+    if (!next) return;
+    state.colliders = next;
+    const colored = next.buttons.reduce((sum, button) => sum + button.chars.length, 0);
+    if (typeof window !== 'undefined') window.__gameLetters = colored;
+    if (colored !== state.loggedLetters) {
+      state.loggedLetters = colored;
+      gameLog('physics colliders', {
+        board: `${Math.round(state.width)}x${Math.round(state.height)}`,
+        colored,
+      });
     }
   }
 
   function launcherOrigin() {
-    return {
-      x: state.width / 2,
-      y: state.height - Math.max(config.piece.radius * 2.5, 24),
-    };
+    return getLauncherOrigin(state.width, state.height, config.piece.radius);
   }
 
-  function getPiece() {
-    return state.pieces[0] ?? null;
+  function canLaunch(now = performance.now()) {
+    if (state.lastLaunchAt == null) return true;
+    return now - state.lastLaunchAt >= (config.launch.cooldownMs ?? 2000);
   }
 
-  function createPiece(origin, direction, speed) {
+  function createPiece(origin, direction, speed, bornAt) {
+    const id = state.nextPieceId;
+    state.nextPieceId += 1;
     return {
+      id,
       x: origin.x,
       y: origin.y,
       vx: direction.x * speed,
@@ -125,38 +152,23 @@ export function createGame({
       rotation: Math.random() * Math.PI * 2,
       colorKey: null,
       hitKeys: new Set(),
-      shots: 0,
       resting: false,
+      bornAt,
     };
   }
 
-  function removePiece(type, extra = {}) {
-    state.pieces.length = 0;
+  function removePiece(piece, type, extra = {}) {
+    const index = state.pieces.indexOf(piece);
+    if (index >= 0) state.pieces.splice(index, 1);
     emit(type, extra);
   }
 
   function launch(direction, speed) {
-    const preset = getPreset();
-    let piece = getPiece();
+    const now = performance.now();
+    if (!canLaunch(now)) return;
 
-    if (!piece) {
-      piece = createPiece(launcherOrigin(), direction, speed);
-      state.pieces.push(piece);
-    } else if (piece.resting) {
-      piece.vx = direction.x * speed;
-      piece.vy = direction.y * speed;
-      piece.resting = false;
-      piece.hitKeys.clear();
-    } else {
-      return;
-    }
-
-    piece.shots += 1;
-    if (piece.shots > (preset.maxShots ?? 3)) {
-      removePiece('expire');
-      return;
-    }
-
+    state.pieces.push(createPiece(launcherOrigin(), direction, speed, now));
+    state.lastLaunchAt = now;
     state.aiming = null;
     wake();
   }
@@ -172,10 +184,9 @@ export function createGame({
   function handlePointerDown(event) {
     if (event.button !== undefined && event.button !== 0) return;
 
-    const piece = getPiece();
-    if (piece && !piece.resting) return;
+    if (!canLaunch()) return;
 
-    const origin = piece ? { x: piece.x, y: piece.y } : launcherOrigin();
+    const origin = launcherOrigin();
     state.aiming = {
       origin,
       current: getPointerPosition(event),
@@ -196,14 +207,12 @@ export function createGame({
 
     const { origin, current } = state.aiming;
     const rawDirection = normalize(current.x - origin.x, current.y - origin.y);
-    const direction = rawDirection.x === 0 && rawDirection.y === 0
+    const adjustedDirection = rawDirection.x === 0 && rawDirection.y === 0
       ? { x: 0, y: -1 }
       : rawDirection;
-    if (direction.y > -0.12) direction.y = -0.12;
-
-    const adjustedDirection = normalize(direction.x, direction.y);
     const distance = Math.hypot(current.x - origin.x, current.y - origin.y);
-    const speed = clamp(220 + distance * 3.4, 220, config.launch.speedMax);
+    const speedMin = config.launch.speedMin ?? 520;
+    const speed = clamp(speedMin + distance * 5.2, speedMin, config.launch.speedMax);
 
     canvas.releasePointerCapture?.(event.pointerId);
     state.aiming = null;
@@ -245,31 +254,71 @@ export function createGame({
     listenersAttached = false;
   }
 
-  function applyCharacterCollision(piece) {
+  function applyCharacterCollision(piece, from) {
+    let overlappedButton = null;
     for (const button of state.colliders.buttons) {
+      const nearButton = sweepCircleRect(from, piece, piece.radius, button.rect);
+      if (nearButton) overlappedButton = button;
       for (const char of button.chars) {
         if (piece.hitKeys.has(char.key)) continue;
-        const collision = circleRectCollision(piece, char);
-        if (!collision) continue;
+        const colorKey = char.colorKey || getPaletteKey(getCharColor?.(char.key));
+        if (!colorKey) continue;
 
-        piece.hitKeys.add(char.key);
-        piece.x += collision.normal.x * (collision.depth + 0.5);
-        piece.y += collision.normal.y * (collision.depth + 0.5);
+        const collision = sweepCircleRect(from, piece, piece.radius, char);
+        if (!collision) continue;
+        const travel = normalize(piece.x - from.x, piece.y - from.y);
+        const normal = travel.x === 0 && travel.y === 0
+          ? collision.normal
+          : { x: -travel.x, y: -travel.y };
+        let backX = collision.x;
+        let backY = collision.y;
+        for (let step = 0; step < 24; step += 1) {
+          if (!circleRectCollision({ x: backX, y: backY, radius: piece.radius }, char)) break;
+          backX += normal.x;
+          backY += normal.y;
+        }
+        piece.x = backX + normal.x * 0.5;
+        piece.y = backY + normal.y * 0.5;
         const nextVelocity = reflectVelocity(
           { x: piece.vx, y: piece.vy },
-          collision.normal,
+          normal,
           getPreset().restitution,
         );
         piece.vx = nextVelocity.x;
         piece.vy = nextVelocity.y;
-
-        const colorKey = getColorKey(getCharColor?.(char.key));
-        if (colorKey) {
-          piece.colorKey = colorKey;
-          emit('recolor', { color: colorKey });
-        }
+        gameLog('letter hit', {
+          key: char.key,
+          colorKey,
+          piece: `${Math.round(piece.x)},${Math.round(piece.y)}`,
+          letter: `${Math.round(char.x)},${Math.round(char.y)} ${Math.round(char.w)}x${Math.round(char.h)}`,
+        });
+        piece.colorKey = colorKey;
+        piece.hitKeys.add(char.key);
+        emit('recolor', { color: colorKey });
         return true;
       }
+    }
+
+    if (overlappedButton && !piece.loggedPass) {
+      piece.loggedPass = true;
+      let closest = Infinity;
+      let closestKey = 'none';
+      overlappedButton.chars.forEach((char) => {
+        const dx = Math.max(char.x - piece.x, 0, piece.x - (char.x + char.w));
+        const dy = Math.max(char.y - piece.y, 0, piece.y - (char.y + char.h));
+        const distance = Math.hypot(dx, dy);
+        if (distance < closest) {
+          closest = distance;
+          closestKey = char.key;
+        }
+      });
+      gameLog('entered button without a letter hit yet', {
+        button: overlappedButton.id,
+        chars: overlappedButton.chars.length,
+        closestKey,
+        closest: Number.isFinite(closest) ? Math.round(closest) : null,
+        piece: `${Math.round(piece.x)},${Math.round(piece.y)}`,
+      });
     }
 
     return false;
@@ -306,6 +355,29 @@ export function createGame({
     piece.vy += direction.y * force;
   }
 
+  function bounceOffHole(piece, center, captureRadius) {
+    const dx = piece.x - center.x;
+    const dy = piece.y - center.y;
+    const away = dx === 0 && dy === 0 ? { x: 0, y: 1 } : normalize(dx, dy);
+    const target = captureRadius + 0.5;
+    piece.x = center.x + away.x * target;
+    piece.y = center.y + away.y * target;
+
+    const nextVelocity = reflectVelocity(
+      { x: piece.vx, y: piece.vy },
+      away,
+      getPreset().restitution,
+    );
+    piece.vx = nextVelocity.x;
+    piece.vy = nextVelocity.y;
+
+    if (Math.hypot(piece.vx, piece.vy) < 80) {
+      piece.vx = away.x * 160;
+      piece.vy = away.y * 160;
+    }
+    piece.resting = false;
+  }
+
   function applyHoleCollision(piece) {
     const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
 
@@ -314,13 +386,19 @@ export function createGame({
       const captureRadius = holeRadius + piece.radius * 0.85;
       if (distanceSquared(piece, center) > captureRadius * captureRadius) continue;
 
+      if (!piece.colorKey) {
+        bounceOffHole(piece, center, captureRadius);
+        return false;
+      }
+
       if (piece.colorKey === hole.color) {
         state.combo += 1;
         state.score += config.scoring.match + Math.max(0, state.combo - 1) * config.scoring.comboStep;
-        removePiece('match', { color: hole.color });
+        removePiece(piece, 'match', { color: hole.color });
       } else {
         state.combo = 0;
-        removePiece(piece.colorKey ? 'miss' : 'expire', { color: hole.color });
+        state.score += config.scoring.wrongHole ?? 0;
+        removePiece(piece, 'miss', { color: hole.color });
       }
       return true;
     }
@@ -328,17 +406,92 @@ export function createGame({
     return false;
   }
 
+  function resolvePieceCollisions() {
+    const pieces = state.pieces;
+    const restitution = getPreset().restitution;
+    const restSpeed = config.physics.restSpeed;
+
+    for (let i = 0; i < pieces.length; i += 1) {
+      for (let j = i + 1; j < pieces.length; j += 1) {
+        const a = pieces[i];
+        const b = pieces[j];
+        const collision = circleCircleCollision(a, b);
+        if (!collision) continue;
+
+        const { normal, depth } = collision;
+        const correction = depth / 2 + 0.25;
+        a.x -= normal.x * correction;
+        a.y -= normal.y * correction;
+        b.x += normal.x * correction;
+        b.y += normal.y * correction;
+        a.x = clamp(a.x, a.radius, state.width - a.radius);
+        a.y = clamp(a.y, a.radius, state.height - a.radius);
+        b.x = clamp(b.x, b.radius, state.width - b.radius);
+        b.y = clamp(b.y, b.radius, state.height - b.radius);
+
+        const approach = (a.vx - b.vx) * normal.x + (a.vy - b.vy) * normal.y;
+        if (approach > 0) {
+          const impulse = (approach * (1 + restitution)) / 2;
+          a.vx -= impulse * normal.x;
+          a.vy -= impulse * normal.y;
+          b.vx += impulse * normal.x;
+          b.vy += impulse * normal.y;
+        }
+
+        if (Math.hypot(a.vx, a.vy) > restSpeed) a.resting = false;
+        if (Math.hypot(b.vx, b.vy) > restSpeed) b.resting = false;
+
+        if (!a.colorKey && b.colorKey) {
+          a.colorKey = b.colorKey;
+          emit('recolor', { color: b.colorKey });
+        } else if (!b.colorKey && a.colorKey) {
+          b.colorKey = a.colorKey;
+          emit('recolor', { color: a.colorKey });
+        }
+      }
+    }
+  }
+
+  function explodePiece(piece, now) {
+    state.bursts.push({
+      x: piece.x,
+      y: piece.y,
+      bornAt: now,
+      colorKey: piece.colorKey,
+    });
+    removePiece(piece, 'explode');
+  }
+
+  function expirePieces(now) {
+    const lifetime = config.piece.lifetimeMs ?? 60000;
+    for (let index = state.pieces.length - 1; index >= 0; index -= 1) {
+      const piece = state.pieces[index];
+      if (now - piece.bornAt >= lifetime) explodePiece(piece, now);
+    }
+  }
+
+  function pruneBursts(now) {
+    const burstMs = config.piece.burstMs ?? 320;
+    state.bursts = state.bursts.filter((burst) => now - burst.bornAt < burstMs);
+  }
+
+  function cooldownActive(now = performance.now()) {
+    if (state.lastLaunchAt == null) return false;
+    return now - state.lastLaunchAt < (config.launch.cooldownMs ?? 2000);
+  }
+
   function updatePiece(piece, dt) {
     const preset = getPreset();
     const scaledDt = dt * (isReducedMotion ? 0.6 : preset.timeScale ?? 1);
     applyMagnet(piece, scaledDt);
 
+    const from = { x: piece.x, y: piece.y };
     piece.x += piece.vx * scaledDt;
     piece.y += piece.vy * scaledDt;
     piece.rotation += Math.hypot(piece.vx, piece.vy) * scaledDt * 0.004;
 
     if (applyHoleCollision(piece)) return;
-    applyCharacterCollision(piece);
+    applyCharacterCollision(piece, from);
     applyWallCollision(piece);
 
     const friction = Math.pow(config.physics.friction, scaledDt * 60);
@@ -355,15 +508,21 @@ export function createGame({
 
   function update(dt) {
     updateColliders();
-    const piece = getPiece();
-    if (!piece || piece.resting) return;
+    const now = performance.now();
+    expirePieces(now);
 
     const substeps = Math.max(1, config.physics.substeps ?? 1);
     const substepDt = dt / substeps;
-    for (let index = 0; index < substeps; index += 1) {
-      if (!getPiece()) break;
-      updatePiece(piece, substepDt);
+    for (let step = 0; step < substeps; step += 1) {
+      for (let index = state.pieces.length - 1; index >= 0; index -= 1) {
+        const piece = state.pieces[index];
+        if (!piece || piece.resting) continue;
+        updatePiece(piece, substepDt);
+      }
+      resolvePieceCollisions();
     }
+
+    pruneBursts(now);
   }
 
   function frame(now) {
@@ -382,8 +541,14 @@ export function createGame({
     }
 
     draw();
-    const piece = getPiece();
-    if (state.aiming || (piece && !piece.resting)) scheduleFrame();
+    if (
+      state.aiming
+      || state.pieces.length > 0
+      || state.bursts.length > 0
+      || cooldownActive()
+    ) {
+      scheduleFrame();
+    }
   }
 
   function start() {
@@ -411,12 +576,6 @@ export function createGame({
     draw();
   }
 
-  function setPreset(name) {
-    if (!config.presets[name]) return;
-    state.presetName = name;
-    draw();
-  }
-
   function setReducedMotion(value) {
     isReducedMotion = Boolean(value);
     draw();
@@ -427,6 +586,7 @@ export function createGame({
     stop();
     detachListeners();
     state.pieces.length = 0;
+    state.bursts.length = 0;
     state.aiming = null;
   }
 
@@ -434,7 +594,6 @@ export function createGame({
     start,
     stop,
     resize,
-    setPreset,
     setReducedMotion,
     destroy,
   };
