@@ -67,12 +67,12 @@ export const theme = {
   },
   palette,
   sparkle: {
-    count: 12,
-    countMin: 6,
-    countMax: 18,
-    frameIntervalMin: 10,
-    frameIntervalMax: 20,
-    highlightColors: ['#FFFFFF', '#C8C8C8'],
+    count: 6,
+    countMin: 3,
+    countMax: 8,
+    frameIntervalMin: 18,
+    frameIntervalMax: 36,
+    highlightColors: ['#C4C4C4', '#9A9A9A'],
     highlightColor: '#FFFFFF',
   },
   grid: {
@@ -103,6 +103,7 @@ export const theme = {
       frameIntervalMin: 45,
       frameIntervalMax: 90,
     },
+    portraitBuzzMs: 420,
   },
   game: {
     pixelScale: 3,
@@ -137,7 +138,7 @@ export const theme = {
     scoring: {
       match: 10,
       comboStep: 1,
-      wrongHole: -5,
+      wrongHole: -10,
     },
     play: {
       restitution: 0.9,
@@ -245,6 +246,7 @@ export function applyThemeToDocument(t = theme) {
   root.style.setProperty('--home-stack-max-width', home.stackMaxWidth ?? 'min(88vw, 30rem)');
   root.style.setProperty('--home-stack-gap', home.stackGap ?? '1rem');
   root.style.setProperty('--home-letter-gap', home.letterGap ?? '0.2rem');
+  root.style.setProperty('--home-portrait-buzz-ms', `${home.portraitBuzzMs ?? 420}ms`);
 
   const game = t.game ?? {};
   root.style.setProperty('--game-pixel-scale', String(game.pixelScale ?? 3));

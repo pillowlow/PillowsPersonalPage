@@ -26,8 +26,9 @@ export default function useColliderRegistry() {
   const canvasRef = useRef(null);
   const characterElementsRef = useRef(new Map());
   const buttonElementsRef = useRef(new Map());
+  const obstacleElementsRef = useRef(new Map());
   const colorsRef = useRef(new Map());
-  const snapshotRef = useRef({ version: 0, buttons: [] });
+  const snapshotRef = useRef({ version: 0, buttons: [], obstacles: [] });
   const measureFrameRef = useRef(null);
   const measureSignatureRef = useRef('');
 
@@ -76,10 +77,39 @@ export default function useColliderRegistry() {
         chars: group.chars,
       };
     });
+    const obstacles = [...obstacleElementsRef.current.entries()]
+      .map(([id, obstacle]) => {
+        if (!obstacle?.element) return null;
+        const rect = obstacle.element.getBoundingClientRect();
+        if (obstacle.shape === 'circle') {
+          const diameter = Math.min(rect.width, rect.height);
+          return {
+            id,
+            shape: 'circle',
+            center: {
+              x: rect.left - baseRect.left + rect.width / 2,
+              y: rect.top - baseRect.top + rect.height / 2,
+            },
+            radius: diameter / 2,
+          };
+        }
+
+        return {
+          id,
+          shape: 'rect',
+          rect: toLocalRect(rect, baseRect),
+        };
+      })
+      .filter((obstacle) => {
+        if (!obstacle) return false;
+        if (obstacle.shape === 'circle') return obstacle.radius > 0;
+        return obstacle.rect.w > 0 && obstacle.rect.h > 0;
+      });
 
     snapshotRef.current = {
       version: snapshotRef.current.version + 1,
       buttons,
+      obstacles,
     };
     const colored = buttons.reduce((sum, button) => sum + button.chars.length, 0);
     const signature = buttons.map((button) => `${button.id}:${button.chars.length}`).join('|');
@@ -147,6 +177,21 @@ export default function useColliderRegistry() {
     [scheduleMeasure],
   );
 
+  const registerObstacle = useCallback(
+    (id, element, options = {}) => {
+      if (element) {
+        obstacleElementsRef.current.set(id, {
+          element,
+          shape: options.shape === 'circle' ? 'circle' : 'rect',
+        });
+      } else {
+        obstacleElementsRef.current.delete(id);
+      }
+      scheduleMeasure();
+    },
+    [scheduleMeasure],
+  );
+
   const setColor = useCallback((key, color) => {
     if (color) {
       colorsRef.current.set(key, color);
@@ -193,11 +238,22 @@ export default function useColliderRegistry() {
       register,
       unregister,
       registerButton,
+      registerObstacle,
       setColor,
       getColliders,
       getCharColor,
       remeasure: measure,
     }),
-    [getCharColor, getColliders, measure, register, registerButton, setCanvasElement, setColor, unregister],
+    [
+      getCharColor,
+      getColliders,
+      measure,
+      register,
+      registerButton,
+      registerObstacle,
+      setCanvasElement,
+      setColor,
+      unregister,
+    ],
   );
 }

@@ -31,29 +31,22 @@ function normalizeProject(project) {
   };
 }
 
-function projectMatchesFilters(types, activeFilters) {
-  if (!types || types.length === 0) {
-    return activeFilters.others;
-  }
-
-  return types.some((type) => {
-    if (activeFilters.others && (!isKnownType(type) || type === 'other')) {
-      return true;
-    }
-    for (const filterKey of FILTER_KEYS) {
-      if (filterKey === 'others' || !activeFilters[filterKey]) continue;
-      if ((FILTER_TYPE_MAP[filterKey] ?? []).includes(type)) {
-        return true;
-      }
-    }
-    return false;
-  });
+function hasCredits(project) {
+  return (project.credits ?? []).some((credit) => String(credit ?? '').trim() !== '');
 }
 
-function isKnownType(type) {
-  return FILTER_KEYS.some((key) => {
-    if (key === 'others') return false;
-    return (FILTER_TYPE_MAP[key] ?? []).includes(type);
+function projectMatchesFilters(project, activeFilters) {
+  if (!hasCredits(project)) {
+    return Boolean(activeFilters.others);
+  }
+
+  const types = project.types ?? [];
+  return types.some((type) => {
+    for (const [filterKey, typeNames] of Object.entries(FILTER_TYPE_MAP)) {
+      if (!activeFilters[filterKey]) continue;
+      if (typeNames.includes(type)) return true;
+    }
+    return false;
   });
 }
 
@@ -65,11 +58,7 @@ export function useFilteredProjects() {
   const projects = useMemo(() => {
     const normalized = projectsData.map(normalizeProject);
 
-    const filtered = normalized.filter((project) => {
-      const types = project.types ?? [];
-      if (types.length === 0) return activeFilters.others;
-      return projectMatchesFilters(types, activeFilters);
-    });
+    const filtered = normalized.filter((project) => projectMatchesFilters(project, activeFilters));
 
     return filtered.sort((a, b) => {
       if (b.year !== a.year) return b.year - a.year;

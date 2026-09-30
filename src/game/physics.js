@@ -80,6 +80,30 @@ export function circleCircleCollision(a, b) {
   };
 }
 
+export function sweepCircleCircle(from, to, radius, circle) {
+  const startHit = circleCircleCollision(
+    { x: from.x, y: from.y, radius },
+    circle,
+  );
+  if (startHit) return { ...startHit, x: from.x, y: from.y };
+
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const distance = Math.hypot(dx, dy);
+  const step = Math.max(radius * 0.75, 4);
+  const steps = Math.max(1, Math.ceil(distance / step));
+
+  for (let index = 1; index <= steps; index += 1) {
+    const t = index / steps;
+    const x = from.x + dx * t;
+    const y = from.y + dy * t;
+    const hit = circleCircleCollision({ x, y, radius }, circle);
+    if (hit) return { ...hit, x, y };
+  }
+
+  return null;
+}
+
 export function sweepCircleRect(from, to, radius, rect) {
   const startHit = circleRectCollision({ x: from.x, y: from.y, radius }, rect);
   if (startHit) return { ...startHit, x: from.x, y: from.y };

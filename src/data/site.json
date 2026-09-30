@@ -18,10 +18,10 @@
     },
     "pages": {
       "intro": {
-        "title": "Intro"
+        "title": "About me"
       },
       "accounts": {
-        "title": "Accounts",
+        "title": "Links",
         "empty": "No account links have been added yet."
       },
       "demos": {
@@ -29,7 +29,7 @@
         "empty": "Online demos are being prepared."
       },
       "works": {
-        "title": "Works"
+        "title": "Porjects"
       }
     },
     "hud": {
@@ -69,12 +69,12 @@
   "zh": {
     "siteTitle": "Po Yu Chen (pillow)",
     "switchers": {
-      "mainContent": "關於我 / 使命與願景",
+      "mainContent": "我所在意的事情...",
       "language": "EN/中"
     },
     "nav": {
-      "intro": "介紹",
-      "accounts": "帳號",
+      "intro": "關於我",
+      "accounts": "相關連結",
       "demos": "線上展示",
       "works": "作品",
       "back": "回到首頁"

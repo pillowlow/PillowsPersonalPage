@@ -8,6 +8,7 @@ import {
   getLauncherOrigin,
   normalize,
   reflectVelocity,
+  sweepCircleCircle,
   sweepCircleRect,
 } from './physics';
 import { gameLog } from './gameLog';
@@ -61,7 +62,7 @@ export function createGame({
     lastLaunchAt: null,
     nextPieceId: 1,
     loggedLetters: -1,
-    colliders: { version: -1, buttons: [] },
+    colliders: { version: -1, buttons: [], obstacles: [] },
     score: 0,
     combo: 0,
     paused: false,
@@ -240,6 +241,12 @@ export function createGame({
     emit(type, extra);
   }
 
+  function applyMiss(piece, color) {
+    state.combo = 0;
+    state.score += config.scoring.wrongHole ?? 0;
+    removePiece(piece, 'miss', { color });
+  }
+
   function launch(direction, speed) {
     const now = performance.now();
     if (!canLaunch(now)) return;
@@ -332,6 +339,63 @@ export function createGame({
   }
 
   function applyCharacterCollision(piece, from) {
+    for (const obstacle of state.colliders.obstacles ?? []) {
+      const obstacleCircle = obstacle.shape === 'circle'
+        ? {
+          x: obstacle.center.x,
+          y: obstacle.center.y,
+          radius: obstacle.radius,
+        }
+        : null;
+      const collision = obstacleCircle
+        ? sweepCircleCircle(from, piece, piece.radius, obstacleCircle)
+        : sweepCircleRect(from, piece, piece.radius, obstacle.rect);
+      if (!collision) continue;
+
+      const travel = normalize(piece.x - from.x, piece.y - from.y);
+      const normal = travel.x === 0 && travel.y === 0
+        ? collision.normal
+        : { x: -travel.x, y: -travel.y };
+      let backX = collision.x;
+      let backY = collision.y;
+      for (let step = 0; step < 24; step += 1) {
+        const overlap = obstacleCircle
+          ? circleCircleCollision(
+            { x: backX, y: backY, radius: piece.radius },
+            obstacleCircle,
+          )
+          : circleRectCollision(
+            { x: backX, y: backY, radius: piece.radius },
+            obstacle.rect,
+          );
+        if (!overlap) {
+          break;
+        }
+        backX += normal.x;
+        backY += normal.y;
+      }
+
+      piece.x = backX + normal.x * 0.5;
+      piece.y = backY + normal.y * 0.5;
+      const nextVelocity = reflectVelocity(
+        { x: piece.vx, y: piece.vy },
+        normal,
+        getPreset().restitution,
+      );
+      piece.vx = nextVelocity.x;
+      piece.vy = nextVelocity.y;
+      const portraitColor = piece.colorKey ? palette[piece.colorKey] : '#F4F4F4';
+      gameLog('obstacle hit', {
+        id: obstacle.id,
+        color: portraitColor,
+        piece: `${Math.round(piece.x)},${Math.round(piece.y)}`,
+      });
+      if (obstacle.id === 'portrait') {
+        emit('portrait', { color: portraitColor });
+      }
+      return true;
+    }
+
     let overlappedButton = null;
     for (const button of state.colliders.buttons) {
       const nearButton = sweepCircleRect(from, piece, piece.radius, button.rect);
@@ -432,29 +496,6 @@ export function createGame({
     piece.vy += direction.y * force;
   }
 
-  function bounceOffHole(piece, center, captureRadius) {
-    const dx = piece.x - center.x;
-    const dy = piece.y - center.y;
-    const away = dx === 0 && dy === 0 ? { x: 0, y: 1 } : normalize(dx, dy);
-    const target = captureRadius + 0.5;
-    piece.x = center.x + away.x * target;
-    piece.y = center.y + away.y * target;
-
-    const nextVelocity = reflectVelocity(
-      { x: piece.vx, y: piece.vy },
-      away,
-      getPreset().restitution,
-    );
-    piece.vx = nextVelocity.x;
-    piece.vy = nextVelocity.y;
-
-    if (Math.hypot(piece.vx, piece.vy) < 80) {
-      piece.vx = away.x * 160;
-      piece.vy = away.y * 160;
-    }
-    piece.resting = false;
-  }
-
   function applyHoleCollision(piece) {
     const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
 
@@ -464,8 +505,8 @@ export function createGame({
       if (distanceSquared(piece, center) > captureRadius * captureRadius) continue;
 
       if (!piece.colorKey) {
-        bounceOffHole(piece, center, captureRadius);
-        return false;
+        applyMiss(piece, hole.color);
+        return true;
       }
 
       if (piece.colorKey === hole.color) {
@@ -474,9 +515,7 @@ export function createGame({
         relocateGate(hole.color);
         removePiece(piece, 'match', { color: hole.color });
       } else {
-        state.combo = 0;
-        state.score += config.scoring.wrongHole ?? 0;
-        removePiece(piece, 'miss', { color: hole.color });
+        applyMiss(piece, hole.color);
       }
       return true;
     }

@@ -10,12 +10,13 @@ export default function DemosPage() {
   const items = demos.map((demo) => {
     const title = language === 'zh' ? demo.titleZh : demo.titleEn;
     const description = language === 'zh' ? demo.descriptionZh : demo.descriptionEn;
-    const tags = demo.tags?.length ? ` · ${demo.tags.join(' · ')}` : '';
+    const tags = demo.tags?.length ? demo.tags.join(' · ') : '';
+    const detail = [demo.year, description, tags].filter(Boolean).join(' · ');
 
     return {
       ...demo,
       label: title,
-      detail: `${demo.year} · ${description}${tags}`,
+      detail,
     };
   });
 

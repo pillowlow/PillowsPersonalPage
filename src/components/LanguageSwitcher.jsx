@@ -6,7 +6,7 @@ export default function LanguageSwitcher() {
   const content = useSiteContent();
 
   return (
-    <button type="button" className="switcher-btn" onClick={toggleLanguage}>
+    <button type="button" className="top-bar-btn" onClick={toggleLanguage}>
       {content.switchers.language}
     </button>
   );
