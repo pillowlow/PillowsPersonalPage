@@ -1069,6 +1069,20 @@ h2 {
 }
 
 @media (max-width: 767px) {
+  .intro-page__top {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-page__identity {
+    grid-row: 1;
+    border-left: 0;
+    border-bottom: 2px solid var(--color-stroke);
+  }
+
+  .intro-page__top > .description-div {
+    grid-row: 2;
+  }
+
   .home-ui {
     gap: 0.65rem;
     padding: clamp(1.25rem, 5vh, 2.75rem) 0 clamp(2.5rem, 8vh, 4rem);

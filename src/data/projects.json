@@ -57,6 +57,22 @@
     "references": []
   },
   {
+    "id": "aquawave-2025",
+    "images": [
+      "/assets/projects/AquaWave.jpg"
+    ],
+    "year": 2025,
+    "creditType": ["paper"],
+    "type": ["full-paper"],
+    "authorship": ["group-artwork"],
+    "titleEn": "Immersive Music Exploration and Improvisation Experiences: Design and Development of the Mixed Reality Instrument System \"AquaWave\"",
+    "titleZh": "沉浸式音樂探索與即興體驗：混合實境樂器系統AquaWave的設計與開發",
+    "contentEn": "Technological advancements have revolutionized the design and social role of musical instruments, positioning them at the center of contemporary cultural discourse and redefining how individuals and communities participate in musical practices. This study introduces AquaWave, a mixed-reality musical instrument system developed with Meta Quest 3 and Unity. It utilizes full-color passthrough, hand gesture tracking, and spatial computing to provide an intuitive and immersive platform for musical expression. The system integrates various virtual instruments, interactive gestures, and spatial narrative elements, enhancing intuitive and flexible musical interaction. To address the limitations of traditional and digital musical instruments—such as lack of portability, high learning barriers, and limited interactivity—this system adopts a lightweight head-mounted display as its primary platform. It integrates anthropomorphic instrument designs, dynamic path guidance, and exploratory interaction mechanisms to enhance accessibility and user engagement. Experimental results demonstrate that the system facilitates improvisation, reduces performance anxiety, and enhances accessibility in collaborative music-making. Participants adapted rapidly, exhibited diverse performance styles, and benefited from its user-friendly design. The shared interactive space, enabled by wireless projection technology, strengthened peer collaboration and social connections. The results confirm its potential in expanding the ability of virtual instruments, bridging individual and collective music-making experiences, and advancing mixed-reality-enabled collaborative learning models. Future research will expand the instrument library, refine interactive narrative mechanisms, and advance spatial audio integration. Additionally, it will explore applications in arts and humanities, technology, and education to maximize AquaWave's creative and social impact. This approach aims to redefine immersive musical experiences and create new pathways for collaborative music-making, ultimately enhancing creative expression and social engagement.",
+    "contentZh": "科技的進步革新了樂器的設計，並拓展其社會影響，使其成為當代文化論述的核心，進而重塑個體與群體參與音樂的方式。本研究開發AquaWave，一款基於Meta Quest 3與Unity的混合實境音樂演奏系統。該系統整合全彩穿透、手勢追蹤與空間運算技術，打造直觀且沉浸式的音樂創作平台，並結合虛擬樂器、互動手勢與空間敘事，以提升直覺化與靈活的音樂互動體驗。為克服傳統與數位樂器的限制，如攜帶不便、高學習門檻與互動性受限等，本系統以輕量化頭戴式顯示器為基礎平台，導入擬人化樂器、動態路徑引導與探索性互動機制，以增強可及性與參與度。實驗結果顯示，該系統促進即興演奏，減輕演奏焦慮，並提升協作音樂創作的可及性。參與者能迅速適應，展現多元演奏風格，並受益於以使用友善為核心的設計。透過無線投影技術所建構的共享互動空間，有效強化了同儕之間的協作關係與社交連結，提升即興演奏與協作學習的整體流暢度。研究結果證實，AquaWave具備擴展虛擬樂器演奏能力、銜接個人與集體音樂創作體驗，以及推進混合實境協作學習模式的潛力。未來研究將致力於擴充樂器庫、優化互動敘事機制，並提升空間音訊整合能力。此外，本研究亦將探索該系統在科技、藝術與人文，以及教育領域的應用，以最大化其創意與社會影響力。本研究方法旨在重新定義沉浸式音樂體驗，開創協作音樂創作的新路徑，進而促進創意表現性與社會參與。",
+    "credit": "IJDMD",
+    "references": []
+  },
+  {
     "id": "gustogear-2024",
     "images": [
       "/assets/projects/gustogear.jpg"
