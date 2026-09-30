@@ -58,6 +58,11 @@ function drawPoolSpot(context, state, config) {
   context.arc(x, y, spotRadius, 0, Math.PI * 2);
   context.fill();
   context.stroke();
+  context.fillStyle = '#F4F4F4';
+  context.font = '12px "VT323", monospace';
+  context.textAlign = 'center';
+  context.textBaseline = 'bottom';
+  context.fillText('START', x, y - spotRadius - 6);
 
   if (!ready) {
     context.beginPath();
@@ -192,19 +197,6 @@ function drawPiece(context, piece, palette) {
   context.restore();
 }
 
-function drawColliderDebug(context, state) {
-  const buttons = state.colliders?.buttons ?? [];
-  context.save();
-  context.strokeStyle = '#00E5FF';
-  context.lineWidth = 1;
-  buttons.forEach((button) => {
-    button.chars.forEach((char) => {
-      context.strokeRect(char.x, char.y, char.w, char.h);
-    });
-  });
-  context.restore();
-}
-
 function drawMonster(context, state, config) {
   if (!config.monster?.enabled || !config.monster.atlasUrl) return;
   // Reserved for the future 2x2 atlas generated from the supplied monster reference.
@@ -220,12 +212,12 @@ export function drawGame(context, state, config, palette) {
 
   drawPixelGrid(context, width, height);
 
+  const holeRadius = config.piece.radius * (config.play?.holeRadiusMultiplier ?? 1.6);
   config.holes.forEach((hole) => {
-    const center = getHoleCenter(hole, width, height);
-    drawHole(context, center, config.piece.radius * 1.8, palette[hole.color]);
+    const center = getHoleCenter(hole, width, height, holeRadius);
+    drawHole(context, center, holeRadius, palette[hole.color]);
   });
 
-  drawColliderDebug(context, state);
   drawPoolSpot(context, state, config);
   drawAimGuide(context, state.aiming, state, config, '#F4F4F4');
   state.pieces.forEach((piece) => drawPiece(context, piece, palette));

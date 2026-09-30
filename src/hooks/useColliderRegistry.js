@@ -40,7 +40,8 @@ export default function useColliderRegistry() {
     if (!baseRect || !root) return;
 
     const grouped = new Map();
-    root.querySelectorAll('[data-collider-key]').forEach((node) => {
+    const colliderScope = root.querySelector('[data-game-collider-scope]') ?? root;
+    colliderScope.querySelectorAll('[data-collider-key]').forEach((node) => {
       const key = node.getAttribute('data-collider-key');
       if (!key) return;
       const colorKey = getPaletteKey(normalizeCssColor(node.style.color));
@@ -81,7 +82,6 @@ export default function useColliderRegistry() {
       buttons,
     };
     const colored = buttons.reduce((sum, button) => sum + button.chars.length, 0);
-    if (typeof window !== 'undefined') window.__gameLetters = colored;
     const signature = buttons.map((button) => `${button.id}:${button.chars.length}`).join('|');
     if (signature !== measureSignatureRef.current) {
       measureSignatureRef.current = signature;

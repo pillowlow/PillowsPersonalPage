@@ -62,13 +62,14 @@ export default function SparkleText({
 
         const color = highlightMap.get(index);
         const colliderKey = colliderId ? `${colliderId}:${index}` : undefined;
+        const isSpace = char.trim() === '';
 
         return (
           <span
             key={index}
-            className="sparkle-text__char"
+            className={`sparkle-text__char${isSpace ? ' sparkle-text__char--space' : ''}`}
             data-collider-key={colliderKey}
-            style={color ? { color, outline: '1px solid #00E5FF' } : undefined}
+            style={color ? { color } : undefined}
           >
             {char}
           </span>

@@ -119,7 +119,6 @@ export function createGame({
     if (!next) return;
     state.colliders = next;
     const colored = next.buttons.reduce((sum, button) => sum + button.chars.length, 0);
-    if (typeof window !== 'undefined') window.__gameLetters = colored;
     if (colored !== state.loggedLetters) {
       state.loggedLetters = colored;
       gameLog('physics colliders', {
@@ -348,7 +347,8 @@ export function createGame({
     const hole = config.holes.find((candidate) => candidate.color === piece.colorKey);
     if (!hole) return;
 
-    const center = getHoleCenter(hole, state.width, state.height);
+    const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
+    const center = getHoleCenter(hole, state.width, state.height, holeRadius);
     const direction = normalize(center.x - piece.x, center.y - piece.y);
     const force = getPreset().magnetStrength * 800 * dt;
     piece.vx += direction.x * force;
@@ -382,7 +382,7 @@ export function createGame({
     const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
 
     for (const hole of config.holes) {
-      const center = getHoleCenter(hole, state.width, state.height);
+      const center = getHoleCenter(hole, state.width, state.height, holeRadius);
       const captureRadius = holeRadius + piece.radius * 0.85;
       if (distanceSquared(piece, center) > captureRadius * captureRadius) continue;
 

@@ -111,17 +111,21 @@ export function reflectVelocity(velocity, normal, restitution = 1) {
   };
 }
 
-export function getHoleCenter(hole, width, height) {
+export function getHoleCenter(hole, width, height, inset = 0) {
+  const t = clamp(Number.isFinite(hole.t) ? hole.t : 0.5, 0, 1);
+  const xInset = clamp(inset, 0, width / 2);
+  const yInset = clamp(inset, 0, height / 2);
+
   if (hole.edge === 'left') {
-    return { x: 0, y: hole.t * height };
+    return { x: xInset, y: clamp(t * height, yInset, height - yInset) };
   }
   if (hole.edge === 'right') {
-    return { x: width, y: hole.t * height };
+    return { x: width - xInset, y: clamp(t * height, yInset, height - yInset) };
   }
   if (hole.edge === 'bottom') {
-    return { x: hole.t * width, y: height };
+    return { x: clamp(t * width, xInset, width - xInset), y: height - yInset };
   }
-  return { x: hole.t * width, y: 0 };
+  return { x: clamp(t * width, xInset, width - xInset), y: yInset };
 }
 
 export function getPolygonVertices(piece) {

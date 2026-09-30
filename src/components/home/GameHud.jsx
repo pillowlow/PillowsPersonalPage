@@ -4,8 +4,6 @@ export default function GameHud({
   score = 0,
   combo = 0,
   lastEvent,
-  letters = 0,
-  debugLine = '',
 }) {
   const content = useSiteContent();
   const eventLabel =
@@ -24,11 +22,7 @@ export default function GameHud({
         <span>
           {content.hud.combo}: <strong>{combo}</strong>
         </span>
-        <span>
-          Letters: <strong>{letters}</strong>
-        </span>
         {eventLabel && <span className="game-hud__event">{eventLabel}</span>}
-        {debugLine && <span className="game-hud__event">{debugLine}</span>}
       </div>
     </div>
   );

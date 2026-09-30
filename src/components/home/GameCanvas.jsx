@@ -31,6 +31,7 @@ export default function GameCanvas({ registry, onHud }) {
         height: rect.height,
         dpr: window.devicePixelRatio || 1,
       });
+      registry.remeasure?.();
     };
 
     const resizeObserver =

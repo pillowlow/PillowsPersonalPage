@@ -87,6 +87,7 @@ export const theme = {
     buttonMinHeight: 'clamp(4.5rem, 10vw, 7rem)',
     stackMaxWidth: 'min(88vw, 30rem)',
     stackGap: 'clamp(0.7rem, 2vw, 1.25rem)',
+    letterGap: 'clamp(0.12rem, 0.5vw, 0.35rem)',
     buttonSparkle: {
       whiteRatio: 0.35,
       minWhite: 1,
@@ -211,6 +212,7 @@ export function applyThemeToDocument(t = theme) {
   root.style.setProperty('--home-button-min-height', home.buttonMinHeight ?? '4.5rem');
   root.style.setProperty('--home-stack-max-width', home.stackMaxWidth ?? 'min(88vw, 30rem)');
   root.style.setProperty('--home-stack-gap', home.stackGap ?? '1rem');
+  root.style.setProperty('--home-letter-gap', home.letterGap ?? '0.2rem');
 
   const game = t.game ?? {};
   root.style.setProperty('--game-pixel-scale', String(game.pixelScale ?? 3));

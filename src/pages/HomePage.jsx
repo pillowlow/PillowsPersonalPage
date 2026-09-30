@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { HOME_BUTTONS } from '../routes';
 import { theme } from '../theme';
 import GameCanvas from '../components/home/GameCanvas';
@@ -11,17 +11,6 @@ export default function HomePage() {
   const content = useSiteContent();
   const registry = useColliderRegistry();
   const [hud, setHud] = useState({ score: 0, combo: 0, lastEvent: null });
-  const [letters, setLetters] = useState(0);
-  const [debugLine, setDebugLine] = useState('');
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (typeof window.__gameLetters === 'number') setLetters(window.__gameLetters);
-      const line = window.__gameLog?.at(-1);
-      if (line) setDebugLine(line);
-    }, 250);
-    return () => window.clearInterval(timer);
-  }, []);
 
   return (
     <section className="home-page" aria-label={content.siteTitle}>
@@ -30,7 +19,11 @@ export default function HomePage() {
 
         <div className="home-ui">
           <p className="home-page__hint">{content.home.hint}</p>
-          <nav className="home-link-stack" aria-label="Main links">
+          <nav
+            className="home-link-stack"
+            aria-label="Main links"
+            data-game-collider-scope
+          >
             {HOME_BUTTONS.map((routeId) => (
               <a
                 key={routeId}
@@ -50,7 +43,7 @@ export default function HomePage() {
               </a>
             ))}
           </nav>
-          <GameHud {...hud} letters={letters} debugLine={debugLine} />
+          <GameHud {...hud} />
         </div>
 
         <svg className="home-effects" aria-hidden="true" focusable="false">

@@ -615,6 +615,8 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-width: 0;
   min-height: clamp(34rem, calc(100svh - 5rem), 52rem);
   overflow: visible;
   isolation: isolate;
@@ -725,7 +727,13 @@ h2 {
 }
 
 .glow-button .sparkle-text__char {
+  display: inline-block;
+  margin-inline: var(--home-letter-gap);
   text-shadow: 0 0 var(--glow-blur) currentColor;
+}
+
+.glow-button .sparkle-text__char--space {
+  margin-inline: 0;
 }
 
 .home-effects {
