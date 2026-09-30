@@ -57,5 +57,23 @@
     "contentEn": "A procedural concept art workshop introducing Blender Geometry Nodes. Participants experimented with generative structures—ropes, urban scenes, mechanical spaces—learning procedural thinking as part of creative practice.",
     "contentZh": "一場介紹 Blender Geometry Nodes 的程序化概念藝術工作坊。參與者實驗繩索、都市、機械空間等生成結構，學習將程序化思維融入創作流程。",
     "references": []
+  },
+  {
+    "id": "gunship-battle-vr-2021",
+    "images": ["/assets/projects/gunship-battle-vr.jpg"],
+    "year": 2021,
+    "types": ["poster"],
+    "contentEn": "GunShip Battle is a cross-modal study of balance. Players stand on a Wii Fit board in an Oculus Quest 2 and shoot from a small boat while the scene simulates rocking water or a curved surface, so the study can compare how ordinary visuals and VR affect balance when attention has to follow fast-moving targets. Accepted as a poster at TAICHI 2021.",
+    "contentZh": "GunShip Battle 是一項跨感官平衡覺研究。玩家站在 Wii Fit 平衡板上、配戴 Oculus Quest 2，於小船上射擊，場景則模擬搖晃的水面或彎曲的平面，藉此比較一般影像與 VR 在需要快速追隨移動目標時對平衡覺的影響。此海報論文獲 TAICHI 2021 接受。",
+    "references": []
+  },
+  {
+    "id": "shop-vanager-2020",
+    "images": ["/assets/projects/shop-vanager.jpg"],
+    "year": 2020,
+    "types": ["poster"],
+    "contentEn": "Shop Vanager looks at the distance between graphical shopping interfaces and a salesperson in a physical shop. A Live2D animated clerk and mobile eye tracking put that clerk on a shopping-app screen, so the study can compare the experience with a normal interface. Accepted as a poster at TAICHI 2020.",
+    "contentZh": "Shop Vanager 探討現今商城圖形介面與實體店鋪店員推銷之間可能產生的疏離。作品以 Live2D 人偶與行動眼球追蹤，在購物 App 上重現傳統「店員」，並與一般介面比較其對體驗的影響。此海報論文獲 TAICHI 2020 接受。",
+    "references": []
   }
 ]

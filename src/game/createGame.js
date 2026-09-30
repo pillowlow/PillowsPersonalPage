@@ -26,6 +26,15 @@ function mergeGameConfig(overrides = {}) {
     launch: { ...theme.game.launch, ...overrides.launch },
     scoring: { ...theme.game.scoring, ...overrides.scoring },
     play: { ...theme.game.play, ...overrides.play },
+    gate: {
+      ...theme.game.gate,
+      ...overrides.gate,
+      visual: { ...theme.game.gate.visual, ...overrides.gate?.visual },
+      relocation: {
+        ...theme.game.gate.relocation,
+        ...overrides.gate?.relocation,
+      },
+    },
     monster: { ...theme.game.monster, ...overrides.monster },
   };
 }
@@ -47,6 +56,7 @@ export function createGame({
     dpr: 1,
     pieces: [],
     bursts: [],
+    holes: config.holes.map((hole) => ({ ...hole })),
     aiming: null,
     lastLaunchAt: null,
     nextPieceId: 1,
@@ -68,6 +78,74 @@ export function createGame({
 
   function getPreset() {
     return config.play;
+  }
+
+  function relocateGate(colorKey) {
+    const relocation = config.gate?.relocation;
+    if (!relocation?.enabled) return;
+
+    const holeIndex = state.holes.findIndex((hole) => hole.color === colorKey);
+    if (holeIndex < 0) return;
+
+    const current = state.holes[holeIndex];
+    const currentCenter = getHoleCenter(current, state.width, state.height);
+    const edges = relocation.edges?.filter((edge) => edge !== 'bottom') ?? ['top', 'left', 'right'];
+    const minT = Math.min(relocation.minT ?? 0.12, relocation.maxT ?? 0.88);
+    const maxT = Math.max(relocation.minT ?? 0.12, relocation.maxT ?? 0.88);
+    const minDistance = Math.min(state.width, state.height) * (relocation.minDistanceRatio ?? 0.16);
+    const minDistanceSquared = minDistance * minDistance;
+    let bestCandidate = current;
+    let bestScore = -Infinity;
+    let next = null;
+
+    const isCandidateValid = (candidate) => {
+      if (
+        candidate.edge === current.edge
+        && Math.abs(candidate.t - current.t) < (relocation.minTGap ?? 0.2)
+      ) {
+        return { valid: false, score: 0 };
+      }
+
+      const candidateCenter = getHoleCenter(candidate, state.width, state.height);
+      const previousDistanceSquared = distanceSquared(candidateCenter, currentCenter);
+      const nearestOtherSquared = state.holes.reduce((nearest, other, index) => {
+        if (index === holeIndex) return nearest;
+        const otherCenter = getHoleCenter(other, state.width, state.height);
+        return Math.min(nearest, distanceSquared(candidateCenter, otherCenter));
+      }, Infinity);
+
+      return {
+        valid: previousDistanceSquared >= minDistanceSquared
+          && nearestOtherSquared >= minDistanceSquared,
+        score: Math.min(previousDistanceSquared, nearestOtherSquared),
+      };
+    };
+
+    for (let attempt = 0; attempt < (relocation.attempts ?? 32); attempt += 1) {
+      const candidate = {
+        ...current,
+        edge: edges[randomInt(0, edges.length - 1)],
+        t: minT + Math.random() * (maxT - minT),
+      };
+      const result = isCandidateValid(candidate);
+
+      if (result.score > bestScore) {
+        bestCandidate = candidate;
+        bestScore = result.score;
+      }
+      if (result.valid) {
+        next = candidate;
+        break;
+      }
+    }
+
+    next ??= bestCandidate;
+    state.holes[holeIndex] = next;
+    gameLog('gate relocated', {
+      color: colorKey,
+      from: `${current.edge}:${current.t.toFixed(2)}`,
+      to: `${next.edge}:${next.t.toFixed(2)}`,
+    });
   }
 
   function emit(type, extra = {}) {
@@ -344,11 +422,10 @@ export function createGame({
 
   function applyMagnet(piece, dt) {
     if (!piece.colorKey || !getPreset().magnetStrength) return;
-    const hole = config.holes.find((candidate) => candidate.color === piece.colorKey);
+    const hole = state.holes.find((candidate) => candidate.color === piece.colorKey);
     if (!hole) return;
 
-    const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
-    const center = getHoleCenter(hole, state.width, state.height, holeRadius);
+    const center = getHoleCenter(hole, state.width, state.height);
     const direction = normalize(center.x - piece.x, center.y - piece.y);
     const force = getPreset().magnetStrength * 800 * dt;
     piece.vx += direction.x * force;
@@ -381,8 +458,8 @@ export function createGame({
   function applyHoleCollision(piece) {
     const holeRadius = piece.radius * (getPreset().holeRadiusMultiplier ?? 1.4);
 
-    for (const hole of config.holes) {
-      const center = getHoleCenter(hole, state.width, state.height, holeRadius);
+    for (const hole of state.holes) {
+      const center = getHoleCenter(hole, state.width, state.height);
       const captureRadius = holeRadius + piece.radius * 0.85;
       if (distanceSquared(piece, center) > captureRadius * captureRadius) continue;
 
@@ -394,6 +471,7 @@ export function createGame({
       if (piece.colorKey === hole.color) {
         state.combo += 1;
         state.score += config.scoring.match + Math.max(0, state.combo - 1) * config.scoring.comboStep;
+        relocateGate(hole.color);
         removePiece(piece, 'match', { color: hole.color });
       } else {
         state.combo = 0;

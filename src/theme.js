@@ -72,8 +72,16 @@ export const theme = {
     countMax: 18,
     frameIntervalMin: 10,
     frameIntervalMax: 20,
-    highlightColors: PALETTE_COLORS,
+    highlightColors: ['#FFFFFF', '#C8C8C8'],
     highlightColor: '#FFFFFF',
+  },
+  grid: {
+    size: '24px',
+    opacity: 0.14,
+  },
+  titleBloom: {
+    near: '0.45rem',
+    far: '1.15rem',
   },
   glow: {
     blur: '0.7rem',
@@ -89,6 +97,7 @@ export const theme = {
     stackGap: 'clamp(0.7rem, 2vw, 1.25rem)',
     letterGap: 'clamp(0.12rem, 0.5vw, 0.35rem)',
     buttonSparkle: {
+      highlightColors: PALETTE_COLORS,
       whiteRatio: 0.35,
       minWhite: 1,
       frameIntervalMin: 45,
@@ -136,6 +145,21 @@ export const theme = {
       aimBounces: 1,
       timeScale: 1,
       magnetStrength: 0.01,
+    },
+    gate: {
+      visual: {
+        thickness: 2.5,
+        innerScale: 0.62,
+      },
+      relocation: {
+        enabled: true,
+        edges: ['top', 'left', 'right'],
+        minT: 0.12,
+        maxT: 0.88,
+        minTGap: 0.2,
+        minDistanceRatio: 0.16,
+        attempts: 32,
+      },
     },
     monster: {
       enabled: false,
@@ -195,6 +219,14 @@ export function applyThemeToDocument(t = theme) {
   root.style.setProperty('--sparkle-frame-interval-min', String(t.sparkle?.frameIntervalMin ?? 2));
   root.style.setProperty('--sparkle-frame-interval-max', String(t.sparkle?.frameIntervalMax ?? 7));
   root.style.setProperty('--color-sparkle-highlight', t.sparkle?.highlightColor ?? '#FFFFFF');
+
+  const grid = t.grid ?? {};
+  root.style.setProperty('--grid-size', grid.size ?? '24px');
+  root.style.setProperty('--grid-opacity', String(grid.opacity ?? 0.14));
+
+  const titleBloom = t.titleBloom ?? {};
+  root.style.setProperty('--title-bloom-near', titleBloom.near ?? '0.45rem');
+  root.style.setProperty('--title-bloom-far', titleBloom.far ?? '1.15rem');
 
   root.style.setProperty('--project-image-aspect-ratio', components.projectImageAspectRatio);
   root.style.setProperty('--icon-size', components.iconSize);

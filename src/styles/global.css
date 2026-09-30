@@ -543,6 +543,38 @@ h2 {
   color: inherit;
 }
 
+.site-header,
+.content-page__heading,
+.projects-heading,
+.intro-page__identity {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-text-title) calc(var(--grid-opacity) * 100%), transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-text-title) calc(var(--grid-opacity) * 100%), transparent) 1px,
+      transparent 1px
+    );
+  background-size: var(--grid-size) var(--grid-size);
+  background-attachment: fixed;
+}
+
+.content-page__heading h1,
+.site-header-title,
+.description-div h2,
+.projects-heading__label,
+.content-page__heading h1 .sparkle-text__char,
+.site-header-title .sparkle-text__char,
+.description-div h2 .sparkle-text__char,
+.projects-heading__label .sparkle-text__char {
+  text-shadow:
+    0 0 var(--title-bloom-near) currentColor,
+    0 0 var(--title-bloom-far) color-mix(in srgb, currentColor 55%, transparent);
+}
+
 .project-list__empty {
   color: var(--color-text-content);
   font-size: var(--text-caption);
@@ -589,7 +621,7 @@ h2 {
   gap: var(--card-gap);
   min-height: var(--projects-bar-height);
   padding: var(--control-padding);
-  background: var(--color-surface);
+  background-color: var(--color-surface);
   border: var(--stroke-width) solid var(--color-stroke);
 }
 

@@ -23,20 +23,53 @@ function drawPixelGrid(context, width, height) {
   context.restore();
 }
 
-function drawHole(context, center, radius, color) {
+function drawGate(context, hole, center, radius, color, visual = {}) {
+  const angles = {
+    top: [0, Math.PI],
+    bottom: [Math.PI, Math.PI * 2],
+    left: [-Math.PI / 2, Math.PI / 2],
+    right: [Math.PI / 2, Math.PI * 1.5],
+  };
+  const [startAngle, endAngle] = angles[hole.edge] ?? angles.top;
+  const innerScale = visual.innerScale ?? 0.62;
+
   context.save();
   context.strokeStyle = color;
   context.fillStyle = color;
-  context.lineWidth = 2;
+  context.lineWidth = visual.thickness ?? 2.5;
   context.shadowColor = color;
-  context.shadowBlur = 12;
+  context.shadowBlur = 14;
+
+  const start = {
+    x: center.x + Math.cos(startAngle) * radius,
+    y: center.y + Math.sin(startAngle) * radius,
+  };
+  const end = {
+    x: center.x + Math.cos(endAngle) * radius,
+    y: center.y + Math.sin(endAngle) * radius,
+  };
+
   context.beginPath();
-  context.arc(center.x, center.y, radius, 0, Math.PI * 2);
-  context.stroke();
-  context.globalAlpha = 0.15;
-  context.beginPath();
-  context.arc(center.x, center.y, radius * 0.66, 0, Math.PI * 2);
+  context.moveTo(start.x, start.y);
+  context.arc(center.x, center.y, radius, startAngle, endAngle);
+  context.lineTo(start.x, start.y);
+  context.closePath();
+  context.globalAlpha = 0.2;
   context.fill();
+  context.globalAlpha = 1;
+  context.stroke();
+
+  context.beginPath();
+  context.setLineDash([3, 3]);
+  context.arc(center.x, center.y, radius * innerScale, startAngle, endAngle);
+  context.stroke();
+  context.setLineDash([]);
+
+  context.beginPath();
+  context.moveTo(start.x, start.y);
+  context.lineTo(end.x, end.y);
+  context.globalAlpha = 0.75;
+  context.stroke();
   context.restore();
 }
 
@@ -213,9 +246,10 @@ export function drawGame(context, state, config, palette) {
   drawPixelGrid(context, width, height);
 
   const holeRadius = config.piece.radius * (config.play?.holeRadiusMultiplier ?? 1.6);
-  config.holes.forEach((hole) => {
-    const center = getHoleCenter(hole, width, height, holeRadius);
-    drawHole(context, center, holeRadius, palette[hole.color]);
+  const holes = state.holes ?? config.holes;
+  holes.forEach((hole) => {
+    const center = getHoleCenter(hole, width, height);
+    drawGate(context, hole, center, holeRadius, palette[hole.color], config.gate?.visual);
   });
 
   drawPoolSpot(context, state, config);
