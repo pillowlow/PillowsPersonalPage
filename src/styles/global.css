@@ -914,12 +914,18 @@ h2 {
 }
 
 .home-page__hint-track {
-  display: block;
+  display: flex;
   width: max-content;
   min-width: max-content;
   white-space: nowrap;
   will-change: transform;
-  animation: home-hint-scroll 16s linear infinite;
+  animation: home-hint-scroll 26s linear infinite;
+}
+
+.home-page__hint-copy {
+  display: block;
+  flex: 0 0 auto;
+  padding-right: 3rem;
 }
 
 .home-link-stack {
@@ -1105,11 +1111,11 @@ h2 {
 
 @keyframes home-hint-scroll {
   from {
-    transform: translateX(100vw);
+    transform: translateX(0);
   }
 
   to {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 

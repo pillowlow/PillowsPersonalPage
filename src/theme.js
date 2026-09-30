@@ -135,6 +135,7 @@ export const theme = {
     },
     launch: {
       origin: 'bottom-center',
+      originOffset: 56,
       mobileBreakpoint: 640,
       mobileOriginRatio: 0.08,
       mobileOriginMax: 64,

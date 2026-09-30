@@ -67,7 +67,10 @@ export default function HomePage() {
             </div>
           </div>
           <p className="home-page__hint" aria-label={content.home.hint}>
-            <span className="home-page__hint-track">{content.home.hint}</span>
+            <span className="home-page__hint-track" aria-hidden="true">
+              <span className="home-page__hint-copy">{content.home.hint}</span>
+              <span className="home-page__hint-copy">{content.home.hint}</span>
+            </span>
           </p>
           <nav
             className="home-link-stack"
