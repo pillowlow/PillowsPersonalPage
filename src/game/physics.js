@@ -51,10 +51,18 @@ export function circleRectCollision(circle, rect) {
   };
 }
 
-export function getLauncherOrigin(width, height, radius) {
+export function getLauncherOrigin(width, height, radius, launchConfig = {}) {
+  const baseOffset = Math.max(radius * 2.5, 24);
+  const mobileOffset = width <= (launchConfig.mobileBreakpoint ?? 640)
+    ? Math.min(
+      height * (launchConfig.mobileOriginRatio ?? 0.08),
+      launchConfig.mobileOriginMax ?? 64,
+    )
+    : launchConfig.originOffset ?? 0;
+
   return {
     x: width / 2,
-    y: height - Math.max(radius * 2.5, 24),
+    y: Math.max(radius, height - baseOffset - mobileOffset),
   };
 }
 

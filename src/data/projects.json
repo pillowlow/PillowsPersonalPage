@@ -15,20 +15,31 @@
     "references": []
   },
   {
-    "id": "flavorface-2026",
+    "id": "bobapedia-2026",
     "images": [
-      "/assets/projects/flavorface.jpg"
+      "/assets/projects/Bobapedia.png"
     ],
     "year": 2026,
-    "creditType": ["others"],
+    "creditType": ["paper"],
     "type": ["workshop"],
-    "authorship": null,
-    "titleEn": "FlavorFace",
-    "titleZh": "FlavorFace",
-    "contentEn": "FlavorFace is an LLM-supported personal flavor wiki and node-based editor. Flexible “entities” (ingredients, recipes, memories, impressions) connect through tasks such as decompose, convert, and assemble. Subjective channels—taste, aroma, texture, culture, memory—stay editable; visual summaries help communicate flavor character. A UIST 2026 workshop in Detroit is in preparation.",
-    "contentZh": "FlavorFace 是一款由大型語言模型支援的個人風味維基與節點式編輯器。彈性的「實體」（食材、食譜、記憶、印象）可透過拆解、轉換、組裝等任務連結；味覺、香氣、質地、文化與記憶等主觀通道可持續編輯，並以視覺摘要溝通風味特徵。目前正籌備 2026 年於底特律 UIST 的工作坊。",
-    "credit": "UIST 2026",
-    "references": []
+    "authorship": "first-author",
+    "titleEn": "Bobapedia",
+    "titleZh": "Bobapedia",
+    "contentEn": "Bobapedia is a full-day participatory workshop exploring how computational interfaces can support collaborative flavor creation. An LLM-supported Flavor Wiki helps participants record sensory impressions, personal and cultural associations, and flavor interpretations, then co-edit flavor concepts and iteratively create customized boba tea recipes.",
+    "contentZh": "Bobapedia 是一場探索計算介面如何支援協作風味創作的全天參與式工作坊。參與者透過 LLM 支援的 Flavor Wiki 記錄感官印象、個人與文化聯想及風味詮釋，再共同編輯風味概念，逐步創作客製化的珍珠奶茶配方。",
+    "credit": "UIST 26",
+    "references": [
+      {
+        "kind": "pdf",
+        "text": "PDF",
+        "link": "/assets/pdf/uistadjunct26-210.pdf"
+      },
+      {
+        "kind": "web",
+        "text": "doi",
+        "link": "https://doi.org/10.1145/3830397.3842694"
+      }
+    ]
   },
   {
     "id": "ar-theater-workshop-2026",
@@ -64,6 +75,11 @@
         "kind": "web",
         "text": "doi",
         "link": "https://dl.acm.org/doi/10.1145/3639701.3663644"
+      },
+      {
+        "kind": "youtube",
+        "text": "Video",
+        "link": "https://youtu.be/OIsHMe1FEu8"
       }
     ]
   },
@@ -81,7 +97,23 @@
     "contentEn": "MAX Tongue explores tongue-based interaction in VR using EMG sensing and a lollipop-based demo. Different licking actions move targets in virtual space, inviting users to reconsider the tongue as an expressive input channel. Exhibited at Laval Virtual 2023.",
     "contentZh": "MAX Tongue 以 EMG 感測與棒棒糖互動探索 VR 中的舌頭操作。不同舔食動作驅動虛擬目標，邀請使用者重新思考舌頭作為表達性輸入介面。曾於 2023 年 Laval Virtual 展出。",
     "credit": "Laval Virtual 2023",
-    "references": []
+    "references": [
+      {
+        "kind": "web",
+        "text": "M6 Interview",
+        "link": "https://www.instagram.com/tv/CrGDa-gpN30/?igshid=YmMyMTA2M2Y%3D"
+      },
+      {
+        "kind": "web",
+        "text": "Report",
+        "link": "https://styly.cc/ja/event/laval-virtual-2023-report-part6/"
+      },
+      {
+        "kind": "youtube",
+        "text": "Video",
+        "link": "https://www.youtube.com/watch?v=mEXEbOyW4SE"
+      }
+    ]
   },
   {
     "id": "geo-nodes-workshop-2022",

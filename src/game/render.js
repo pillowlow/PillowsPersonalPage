@@ -74,7 +74,12 @@ function drawGate(context, hole, center, radius, color, visual = {}) {
 }
 
 function drawPoolSpot(context, state, config) {
-  const { x, y } = getLauncherOrigin(state.width, state.height, config.piece.radius);
+  const { x, y } = getLauncherOrigin(
+    state.width,
+    state.height,
+    config.piece.radius,
+    config.launch,
+  );
   const spotRadius = config.piece.radius * 1.35;
   const cooldownMs = config.launch.cooldownMs ?? 2000;
   const elapsed = state.lastLaunchAt == null
@@ -82,11 +87,19 @@ function drawPoolSpot(context, state, config) {
     : performance.now() - state.lastLaunchAt;
   const ready = elapsed >= cooldownMs;
   const progress = ready ? 1 : Math.max(0, Math.min(1, elapsed / cooldownMs));
+  const pulseMs = config.launch.startPulseMs ?? 1200;
+  const pulse = state.reducedMotion
+    ? 0.5
+    : 0.5 + 0.5 * Math.sin((performance.now() / pulseMs) * Math.PI * 2);
 
   context.save();
   context.strokeStyle = '#F4F4F4';
-  context.fillStyle = ready ? 'rgba(244, 244, 244, 0.38)' : 'rgba(244, 244, 244, 0.12)';
-  context.lineWidth = 1.5;
+  context.fillStyle = ready
+    ? `rgba(244, 244, 244, ${0.24 + pulse * 0.18})`
+    : `rgba(244, 244, 244, ${0.1 + pulse * 0.08})`;
+  context.lineWidth = 1.5 + pulse * 0.8;
+  context.shadowColor = '#F4F4F4';
+  context.shadowBlur = 8 + pulse * 12;
   context.beginPath();
   context.arc(x, y, spotRadius, 0, Math.PI * 2);
   context.fill();
@@ -100,6 +113,8 @@ function drawPoolSpot(context, state, config) {
   if (!ready) {
     context.beginPath();
     context.strokeStyle = '#F6B80E';
+    context.shadowColor = '#F6B80E';
+    context.shadowBlur = 8;
     context.lineWidth = 2;
     context.arc(
       x,

@@ -605,19 +605,31 @@ h2 {
 .project-card__refs {
   display: flex;
   flex-flow: row wrap;
-  gap: 0.35rem;
+  gap: 0.55rem;
+  margin-top: 0.2rem;
 }
 
 .project-card__ref-link {
-  font-size: var(--text-caption);
-  color: var(--color-text-content);
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  font-size: var(--text-body);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-text-title);
   text-decoration: none;
-  border: var(--stroke-width) solid var(--color-stroke);
-  padding: 0.12rem 0.5rem;
+  border: var(--stroke-width) solid color-mix(in srgb, var(--color-text-title) 65%, var(--color-stroke));
+  border-radius: var(--radius-default);
+  background: color-mix(in srgb, var(--color-text-title) 10%, var(--color-surface));
+  padding: 0.25rem 0.75rem;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .project-card__ref-link:hover {
-  color: var(--color-text-title);
+  color: var(--color-bg);
+  background: var(--color-text-title);
 }
 
 .sparkle-text__char {
@@ -881,13 +893,33 @@ h2 {
 }
 
 .home-page__hint {
-  max-width: var(--home-stack-max-width);
+  width: var(--home-stack-max-width);
+  max-width: 100%;
+  padding: 0 0.75rem;
   color: var(--color-text-content);
   font-family: var(--font-hud);
-  font-size: var(--text-body);
+  font-size: clamp(0.65rem, 0.8vw + 0.45rem, 0.95rem);
   letter-spacing: 0.08em;
-  text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.home-page__hint::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.home-page__hint-track {
+  display: block;
+  width: max-content;
+  min-width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+  animation: home-hint-scroll 16s linear infinite;
 }
 
 .home-link-stack {
@@ -979,7 +1011,8 @@ h2 {
 }
 
 .glow-button .sparkle-text__char--space {
-  margin-inline: 0;
+  width: 0.42em;
+  margin-inline: 0.08em;
 }
 
 .home-effects {
@@ -1029,6 +1062,36 @@ h2 {
   text-transform: uppercase;
 }
 
+@media (max-width: 767px) {
+  .home-ui {
+    gap: 0.65rem;
+    padding: clamp(1.25rem, 5vh, 2.75rem) 0 clamp(2.5rem, 8vh, 4rem);
+  }
+
+  .home-profile__frame {
+    width: clamp(4.25rem, 18vw, 5.75rem);
+  }
+
+  .home-page__hint {
+    width: min(82vw, 21rem);
+    max-width: 100%;
+    padding-inline: 0.5rem;
+    font-size: clamp(0.52rem, 2.4vw, 0.82rem);
+    letter-spacing: 0.04em;
+  }
+
+  .home-link-stack {
+    width: min(82vw, 21rem);
+    gap: 0.55rem;
+  }
+
+  .glow-button {
+    min-height: clamp(3rem, 8vh, 4.25rem);
+    padding: 0.45rem 0.65rem;
+    font-size: clamp(0.82rem, 4vw, 1.15rem);
+  }
+}
+
 @keyframes glow-button-flicker {
   0%,
   100% {
@@ -1037,6 +1100,16 @@ h2 {
 
   50% {
     opacity: 0.82;
+  }
+}
+
+@keyframes home-hint-scroll {
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(-100%);
   }
 }
 
@@ -1188,6 +1261,11 @@ h2 {
   .glow-button,
   .link-list__link {
     transition: none;
+  }
+
+  .home-page__hint-track {
+    animation: none;
+    transform: none;
   }
 
   .glow-button::after {

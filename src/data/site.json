@@ -12,7 +12,7 @@
       "back": "Back to home"
     },
     "home": {
-      "hint": "Tap empty space to shoot · match the blinking colors"
+      "hint": "COLOR BULLET WITH TEXT → HIT MATCHING TARGET → SCORE POINTS"
     },
     "pages": {
       "accounts": {
@@ -104,7 +104,7 @@
       "back": "回到首頁"
     },
     "home": {
-      "hint": "點擊空白處射擊 · 對準閃爍的顏色"
+      "hint": "用文字為子彈染色 → 擊中相同顏色目標 → 得分"
     },
     "pages": {
       "accounts": {

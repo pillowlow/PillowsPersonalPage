@@ -135,6 +135,11 @@ export const theme = {
     },
     launch: {
       origin: 'bottom-center',
+      mobileBreakpoint: 640,
+      mobileOriginRatio: 0.08,
+      mobileOriginMax: 64,
+      idlePulse: true,
+      startPulseMs: 1200,
       speedMin: 520,
       speedMax: 1200,
       cooldownMs: 2000,

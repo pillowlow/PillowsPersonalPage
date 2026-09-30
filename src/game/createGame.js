@@ -68,6 +68,7 @@ export function createGame({
     portraitColorKey: null,
     paused: false,
     hidden: false,
+    reducedMotion: Boolean(reducedMotion),
   };
 
   let running = false;
@@ -209,7 +210,12 @@ export function createGame({
   }
 
   function launcherOrigin() {
-    return getLauncherOrigin(state.width, state.height, config.piece.radius);
+    return getLauncherOrigin(
+      state.width,
+      state.height,
+      config.piece.radius,
+      config.launch,
+    );
   }
 
   function canLaunch(now = performance.now()) {
@@ -679,6 +685,7 @@ export function createGame({
       || state.pieces.length > 0
       || state.bursts.length > 0
       || cooldownActive()
+      || (config.launch.idlePulse && !isReducedMotion)
     ) {
       scheduleFrame();
     }
@@ -711,6 +718,7 @@ export function createGame({
 
   function setReducedMotion(value) {
     isReducedMotion = Boolean(value);
+    state.reducedMotion = isReducedMotion;
     draw();
   }
 
