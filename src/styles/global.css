@@ -427,6 +427,18 @@ h2 {
   accent-color: var(--tag-color-competitions);
 }
 
+.project-filters-dropdown__option--workshops .project-filters-dropdown__swatch {
+  background-color: var(--tag-color-workshops);
+}
+
+.project-filters-dropdown__option--workshops .project-filters-dropdown__label {
+  color: var(--tag-color-workshops);
+}
+
+.project-filters-dropdown__option--workshops input {
+  accent-color: var(--tag-color-workshops);
+}
+
 .project-filters-dropdown__option--others .project-filters-dropdown__swatch {
   background-color: var(--tag-color-others);
 }
@@ -568,6 +580,12 @@ h2 {
 .project-card__type-tag--competitions {
   background-color: var(--tag-color-competitions);
   border-color: var(--tag-color-competitions);
+  color: #1a1a1a;
+}
+
+.project-card__type-tag--workshops {
+  background-color: var(--tag-color-workshops);
+  border-color: var(--tag-color-workshops);
   color: #1a1a1a;
 }
 

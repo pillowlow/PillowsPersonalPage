@@ -2,13 +2,14 @@ import { theme } from '../theme';
 
 /**
  * Project type categories — colors resolved from theme.palette (see theme.js).
- * Order: publications → firstAuthors → artworks → competitions → others
+ * Order: publications → firstAuthors → artworks → competitions → workshops → others
  */
 export const PROJECT_TYPE_CATEGORIES = [
   { id: 'publications', types: ['publication', 'poster', 'paper'] },
   { id: 'firstAuthors', types: ['first-author', 'first-author-paper'] },
   { id: 'artworks', types: ['artwork'] },
-  { id: 'competitions', types: ['competition', 'workshop'] },
+  { id: 'competitions', types: ['competition'] },
+  { id: 'workshops', types: ['workshop'] },
   { id: 'others', types: ['other'] },
 ];
 

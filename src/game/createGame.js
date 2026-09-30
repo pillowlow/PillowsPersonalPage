@@ -65,6 +65,7 @@ export function createGame({
     colliders: { version: -1, buttons: [], obstacles: [] },
     score: 0,
     combo: 0,
+    portraitColorKey: null,
     paused: false,
     hidden: false,
   };
@@ -384,15 +385,30 @@ export function createGame({
       );
       piece.vx = nextVelocity.x;
       piece.vy = nextVelocity.y;
-      const portraitColor = piece.colorKey ? palette[piece.colorKey] : '#F4F4F4';
+      let impactColor = piece.colorKey ? palette[piece.colorKey] : '#F4F4F4';
+      if (obstacle.id === 'portrait') {
+        if (piece.colorKey) {
+          state.portraitColorKey = piece.colorKey;
+        } else if (state.portraitColorKey) {
+          piece.colorKey = state.portraitColorKey;
+          emit('recolor', {
+            color: state.portraitColorKey,
+            source: 'portrait',
+          });
+        }
+        impactColor = state.portraitColorKey
+          ? palette[state.portraitColorKey]
+          : '#F4F4F4';
+        emit('portrait', {
+          color: impactColor,
+          colorKey: state.portraitColorKey,
+        });
+      }
       gameLog('obstacle hit', {
         id: obstacle.id,
-        color: portraitColor,
+        color: impactColor,
         piece: `${Math.round(piece.x)},${Math.round(piece.y)}`,
       });
-      if (obstacle.id === 'portrait') {
-        emit('portrait', { color: portraitColor });
-      }
       return true;
     }
 

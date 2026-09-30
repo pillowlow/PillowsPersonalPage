@@ -6,6 +6,7 @@ const FILTER_KEYS = [
   'firstAuthors',
   'artworks',
   'competitions',
+  'workshops',
   'others',
 ];
 
@@ -13,7 +14,8 @@ const FILTER_TYPE_MAP = {
   publications: ['publication', 'poster', 'paper'],
   firstAuthors: ['first-author', 'first-author-paper'],
   artworks: ['artwork'],
-  competitions: ['competition', 'workshop'],
+  competitions: ['competition'],
+  workshops: ['workshop'],
 };
 
 function getProjectImages(project) {

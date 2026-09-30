@@ -215,6 +215,7 @@ export function applyThemeToDocument(t = theme) {
   Object.entries(t.palette ?? {}).forEach(([key, hex]) => {
     root.style.setProperty(`--tag-color-${key}`, hex);
   });
+  root.style.setProperty('--tag-color-workshops', '#2BB8A8');
 
   root.style.setProperty('--sparkle-count', String(t.sparkle?.count ?? 12));
   root.style.setProperty('--sparkle-frame-interval-min', String(t.sparkle?.frameIntervalMin ?? 2));

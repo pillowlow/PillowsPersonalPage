@@ -60,6 +60,7 @@
       "firstAuthors": "First authors",
       "artworks": "Art works",
       "competitions": "Competitions",
+      "workshops": "Workshops",
       "others": "Others"
     },
     "projectCard": {
@@ -126,7 +127,8 @@
       "publications": "出版",
       "firstAuthors": "第一作者",
       "artworks": "藝術作品",
-      "competitions": "競賽與工作坊",
+      "competitions": "競賽",
+      "workshops": "工作坊",
       "others": "其他"
     },
     "projectCard": {

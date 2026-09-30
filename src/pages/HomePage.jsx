@@ -14,9 +14,9 @@ export default function HomePage() {
   const content = useSiteContent();
   const registry = useColliderRegistry();
   const [hud, setHud] = useState({ score: 0, combo: 0, lastEvent: null });
+  const [profileColor, setProfileColor] = useState(DEFAULT_PROFILE_COLOR);
   const [profileBuzz, setProfileBuzz] = useState({
     active: false,
-    color: DEFAULT_PROFILE_COLOR,
     key: 0,
   });
   const profileBuzzTimerRef = useRef(null);
@@ -24,9 +24,9 @@ export default function HomePage() {
   const handleHud = useCallback((payload) => {
     setHud(payload);
     if (payload?.type === 'portrait' && payload.color) {
+      setProfileColor(payload.color);
       setProfileBuzz((current) => ({
         active: true,
-        color: payload.color,
         key: current.key + 1,
       }));
       window.clearTimeout(profileBuzzTimerRef.current);
@@ -34,7 +34,6 @@ export default function HomePage() {
         setProfileBuzz((current) => ({
           ...current,
           active: false,
-          color: DEFAULT_PROFILE_COLOR,
         }));
         profileBuzzTimerRef.current = null;
       }, theme.home.portraitBuzzMs ?? 420);
@@ -54,7 +53,7 @@ export default function HomePage() {
           <div className="home-profile" aria-label={content.siteTitle}>
             <div
               className={`home-profile__frame${profileBuzz.active ? ' home-profile__frame--buzzing' : ''}`}
-              style={{ '--profile-accent': profileBuzz.color }}
+              style={{ '--profile-accent': profileColor }}
               ref={(node) => registry.registerObstacle?.('portrait', node, { shape: 'circle' })}
             >
               <PortfolioPortrait />
