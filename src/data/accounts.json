@@ -16,5 +16,23 @@
     "href": "https://instagram.com/",
     "icon": "/assets/icons/mdi_instagram.svg",
     "showOnIntro": false
+  },
+  {
+    "id": "linkedin",
+    "labelEn": "LinkedIn",
+    "labelZh": "LinkedIn",
+    "handle": "po-yu-chen-2365a5272",
+    "href": "https://www.linkedin.com/in/po-yu-chen-2365a5272/",
+    "icon": "/assets/icons/mdi_linkedin.svg",
+    "showOnIntro": false
+  },
+  {
+    "id": "google-scholar",
+    "labelEn": "Google Scholar",
+    "labelZh": "Google Scholar",
+    "handle": "F9B40xEAAAAJ",
+    "href": "https://scholar.google.com/citations?user=F9B40xEAAAAJ",
+    "icon": "/assets/icons/google-scholar.svg",
+    "showOnIntro": false
   }
 ]

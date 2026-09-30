@@ -1,36 +1,49 @@
 import { theme } from '../theme';
 
-/**
- * Project type categories — colors resolved from theme.palette (see theme.js).
- * Order: publications → firstAuthors → artworks → competitions → workshops → others
- */
-export const PROJECT_TYPE_CATEGORIES = [
-  { id: 'publications', types: ['publication', 'poster', 'paper'] },
-  { id: 'firstAuthors', types: ['first-author', 'first-author-paper'] },
-  { id: 'artworks', types: ['artwork'] },
-  { id: 'competitions', types: ['competition'] },
-  { id: 'workshops', types: ['workshop'] },
-  { id: 'others', types: ['other'] },
+export const CREDIT_TYPE_CATEGORIES = [
+  { id: 'papers', values: ['paper'] },
+  { id: 'competitions', values: ['competition'] },
+  { id: 'exhibitions', values: ['exhibition'] },
+  { id: 'others', values: ['others'] },
 ];
 
-const typeToCategory = new Map();
-PROJECT_TYPE_CATEGORIES.forEach((category) => {
-  category.types.forEach((type) => typeToCategory.set(type, category.id));
+export const FORMAT_TYPE_CATEGORIES = [
+  { id: 'fullPapers', values: ['full-paper'] },
+  { id: 'posters', values: ['poster'] },
+  { id: 'demos', values: ['demo'] },
+  { id: 'exhibitions', values: ['exhibition'] },
+  { id: 'competitions', values: ['competition'] },
+  { id: 'workshops', values: ['workshop'] },
+];
+
+const creditTypeToCategory = new Map();
+CREDIT_TYPE_CATEGORIES.forEach((category) => {
+  category.values.forEach((value) => creditTypeToCategory.set(value, category.id));
+});
+
+const formatTypeToCategory = new Map();
+FORMAT_TYPE_CATEGORIES.forEach((category) => {
+  category.values.forEach((value) => formatTypeToCategory.set(value, category.id));
 });
 
 export function getCategoryColor(categoryId) {
   return theme.palette[categoryId] ?? theme.palette.others;
 }
 
-export function getTypeTagCategory(type) {
-  if (typeToCategory.has(type)) {
-    return typeToCategory.get(type);
-  }
-  return 'others';
+export function getCreditTypeCategory(value) {
+  return creditTypeToCategory.get(value) ?? 'others';
 }
 
-export function getTypeTagClassName(type) {
-  return `project-card__type-tag--${getTypeTagCategory(type)}`;
+export function getFormatTypeCategory(value) {
+  return formatTypeToCategory.get(value) ?? 'others';
+}
+
+export function getCreditTypeClassName(value) {
+  return `project-card__credit-type--${getCreditTypeCategory(value)}`;
+}
+
+export function getTypeTagClassName(value) {
+  return `project-card__type-tag--${getFormatTypeCategory(value)}`;
 }
 
 export function getFilterOptionClassName(filterKey) {

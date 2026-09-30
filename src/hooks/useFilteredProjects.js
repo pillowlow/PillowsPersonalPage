@@ -2,21 +2,18 @@ import { useMemo, useState } from 'react';
 import projectsData from '../data/projects.json';
 
 const FILTER_KEYS = [
-  'publications',
-  'firstAuthors',
-  'artworks',
+  'papers',
+  'posters',
+  'demos',
+  'exhibitions',
   'competitions',
   'workshops',
+  'firstAuthors',
+  'groupArtworks',
   'others',
 ];
 
-const FILTER_TYPE_MAP = {
-  publications: ['publication', 'poster', 'paper'],
-  firstAuthors: ['first-author', 'first-author-paper'],
-  artworks: ['artwork'],
-  competitions: ['competition'],
-  workshops: ['workshop'],
-};
+const PRIMARY_CREDIT_TYPES = new Set(['paper', 'competition', 'exhibition']);
 
 function getProjectImages(project) {
   if (Array.isArray(project.images) && project.images.length > 0) {
@@ -27,32 +24,49 @@ function getProjectImages(project) {
 }
 
 function normalizeProject(project) {
+  const creditType = Array.isArray(project.creditType)
+    ? [...new Set(project.creditType)]
+    : [];
+  const normalizedCreditType = creditType.some((value) => PRIMARY_CREDIT_TYPES.has(value))
+    || creditType.includes('others')
+    ? creditType
+    : [...creditType, 'others'];
+
   return {
     ...project,
+    creditType: normalizedCreditType,
+    type: Array.isArray(project.type) ? project.type : [],
     images: getProjectImages(project),
   };
 }
 
-function hasCredits(project) {
-  return (project.credits ?? []).some((credit) => String(credit ?? '').trim() !== '');
-}
-
 function projectMatchesFilters(project, activeFilters) {
-  if (!hasCredits(project)) {
-    return Boolean(activeFilters.others);
-  }
+  const creditTypes = project.creditType ?? [];
+  const types = project.type ?? [];
+  const matches = {
+    papers: creditTypes.includes('paper') || types.includes('full-paper'),
+    posters: types.includes('poster'),
+    demos: types.includes('demo'),
+    exhibitions: creditTypes.includes('exhibition') || types.includes('exhibition'),
+    competitions: creditTypes.includes('competition') || types.includes('competition'),
+    workshops: types.includes('workshop'),
+    firstAuthors: project.authorship === 'first-author',
+    groupArtworks: project.authorship === 'group-artwork',
+    others: creditTypes.includes('others'),
+  };
 
-  const types = project.types ?? [];
-  return types.some((type) => {
-    for (const [filterKey, typeNames] of Object.entries(FILTER_TYPE_MAP)) {
-      if (!activeFilters[filterKey]) continue;
-      if (typeNames.includes(type)) return true;
-    }
-    return false;
-  });
+  const matchesUncheckedFilter = FILTER_KEYS.some(
+    (key) => activeFilters[key] === false && matches[key],
+  );
+
+  if (matchesUncheckedFilter) return false;
+
+  return FILTER_KEYS.some((key) => activeFilters[key] && matches[key]);
 }
 
-const defaultFilters = Object.fromEntries(FILTER_KEYS.map((key) => [key, true]));
+const defaultFilters = Object.fromEntries(
+  FILTER_KEYS.map((key) => [key, key !== 'others']),
+);
 
 export function useFilteredProjects() {
   const [activeFilters, setActiveFilters] = useState(defaultFilters);

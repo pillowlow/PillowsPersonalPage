@@ -1,12 +1,23 @@
 export const palette = {
   publications: '#F6B80E',
+  papers: '#F6B80E',
+  posters: '#E4A84A',
+  demos: '#6C8CFF',
+  exhibitions: '#D66BA0',
   firstAuthors: '#F15A24',
   artworks: '#C83434',
   competitions: '#B9D85A',
-  others: '#2F5F9E',
+  workshops: '#2BB8A8',
+  others: '#5B8DEF',
 };
 
-export const PALETTE_COLORS = Object.values(palette);
+export const PALETTE_COLORS = [
+  palette.publications,
+  palette.firstAuthors,
+  palette.artworks,
+  palette.competitions,
+  palette.others,
+];
 
 const paletteKeyByColor = new Map(
   Object.entries(palette).map(([key, value]) => [String(value).toLowerCase(), key]),
@@ -215,7 +226,6 @@ export function applyThemeToDocument(t = theme) {
   Object.entries(t.palette ?? {}).forEach(([key, hex]) => {
     root.style.setProperty(`--tag-color-${key}`, hex);
   });
-  root.style.setProperty('--tag-color-workshops', '#2BB8A8');
 
   root.style.setProperty('--sparkle-count', String(t.sparkle?.count ?? 12));
   root.style.setProperty('--sparkle-frame-interval-min', String(t.sparkle?.frameIntervalMin ?? 2));

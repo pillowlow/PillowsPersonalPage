@@ -214,7 +214,7 @@ h2 {
   align-items: stretch;
   min-width: 0;
   background-color: var(--color-surface);
-  border: var(--stroke-width) solid var(--color-stroke);
+  border: 2px solid var(--color-stroke);
 }
 
 .intro-page__identity {
@@ -225,7 +225,7 @@ h2 {
   gap: 0.55rem;
   min-width: 0;
   padding: var(--content-padding);
-  border-left: var(--stroke-width) solid var(--color-stroke);
+  border-left: 2px solid var(--color-stroke);
   background-color: var(--color-surface);
 }
 
@@ -254,8 +254,21 @@ h2 {
   white-space: pre-wrap;
 }
 
+.description-div__body a {
+  color: var(--color-text-title);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
+}
+
+.description-div__body a:hover,
+.description-div__body a:focus-visible {
+  color: var(--color-accent);
+}
+
 .intro-page__bottom .description-div {
-  border: var(--stroke-width) solid var(--color-stroke);
+  border: 2px solid var(--color-stroke);
 }
 
 .portfolio-div {
@@ -281,31 +294,9 @@ h2 {
   background: var(--color-surface-muted);
 }
 
-.projects-heading {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0;
-  min-height: var(--projects-bar-height);
-  padding: 0;
-  background: var(--color-button-bg);
-  border: var(--stroke-width) solid var(--color-stroke);
-  border-radius: var(--radius-default);
-}
-
-.projects-heading__label {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: var(--text-h2);
-  font-weight: 500;
-  color: var(--color-text-title);
-  letter-spacing: var(--projects-title-letter-spacing);
-  padding: 0 0.4rem;
-  text-align: center;
-  white-space: nowrap;
-  pointer-events: none;
+.intro-page__identity .portfolio-portrait__image {
+  border: 3px solid var(--color-stroke);
+  box-shadow: 0 0 0.8rem color-mix(in srgb, var(--color-stroke) 35%, transparent);
 }
 
 .project-filters-dropdown {
@@ -379,76 +370,56 @@ h2 {
   flex-shrink: 0;
 }
 
-.project-filters-dropdown__option--publications .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-publications);
+.project-filters-dropdown__option {
+  --filter-color: var(--tag-color-others);
 }
 
-.project-filters-dropdown__option--publications .project-filters-dropdown__label {
-  color: var(--tag-color-publications);
+.project-filters-dropdown__option--papers {
+  --filter-color: var(--tag-color-papers);
 }
 
-.project-filters-dropdown__option--publications input {
-  accent-color: var(--tag-color-publications);
+.project-filters-dropdown__option--posters {
+  --filter-color: var(--tag-color-posters);
 }
 
-.project-filters-dropdown__option--firstAuthors .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-firstAuthors);
+.project-filters-dropdown__option--demos {
+  --filter-color: var(--tag-color-demos);
 }
 
-.project-filters-dropdown__option--firstAuthors .project-filters-dropdown__label {
-  color: var(--tag-color-firstAuthors);
+.project-filters-dropdown__option--exhibitions {
+  --filter-color: var(--tag-color-exhibitions);
 }
 
-.project-filters-dropdown__option--firstAuthors input {
-  accent-color: var(--tag-color-firstAuthors);
+.project-filters-dropdown__option--competitions {
+  --filter-color: var(--tag-color-competitions);
 }
 
-.project-filters-dropdown__option--artworks .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-artworks);
+.project-filters-dropdown__option--workshops {
+  --filter-color: var(--tag-color-workshops);
 }
 
-.project-filters-dropdown__option--artworks .project-filters-dropdown__label {
-  color: var(--tag-color-artworks);
+.project-filters-dropdown__option--firstAuthors {
+  --filter-color: var(--tag-color-firstAuthors);
 }
 
-.project-filters-dropdown__option--artworks input {
-  accent-color: var(--tag-color-artworks);
+.project-filters-dropdown__option--groupArtworks {
+  --filter-color: var(--tag-color-artworks);
 }
 
-.project-filters-dropdown__option--competitions .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-competitions);
+.project-filters-dropdown__option--others {
+  --filter-color: var(--tag-color-others);
 }
 
-.project-filters-dropdown__option--competitions .project-filters-dropdown__label {
-  color: var(--tag-color-competitions);
+.project-filters-dropdown__swatch {
+  background-color: var(--filter-color);
 }
 
-.project-filters-dropdown__option--competitions input {
-  accent-color: var(--tag-color-competitions);
+.project-filters-dropdown__label {
+  color: var(--filter-color);
 }
 
-.project-filters-dropdown__option--workshops .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-workshops);
-}
-
-.project-filters-dropdown__option--workshops .project-filters-dropdown__label {
-  color: var(--tag-color-workshops);
-}
-
-.project-filters-dropdown__option--workshops input {
-  accent-color: var(--tag-color-workshops);
-}
-
-.project-filters-dropdown__option--others .project-filters-dropdown__swatch {
-  background-color: var(--tag-color-others);
-}
-
-.project-filters-dropdown__option--others .project-filters-dropdown__label {
-  color: var(--tag-color-others);
-}
-
-.project-filters-dropdown__option--others input {
-  accent-color: var(--tag-color-others);
+.project-filters-dropdown__option input {
+  accent-color: var(--filter-color);
 }
 
 .downward-container {
@@ -480,7 +451,7 @@ h2 {
 .project-card__intro {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.55rem;
   width: 100%;
   order: 1;
 }
@@ -518,16 +489,18 @@ h2 {
 .project-card__head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.35rem 0.75rem;
+  gap: 0.45rem 1rem;
   width: 100%;
 }
 
 .project-card__types {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: 0.18rem 0.28rem;
+  margin-top: 0.1rem;
 }
 
 .project-card__title {
@@ -540,59 +513,84 @@ h2 {
 
 .project-card__credits {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25rem;
+  margin-left: auto;
 }
 
 .project-card__credit {
   color: var(--color-text-title);
-  font-size: var(--text-caption);
+  font-size: var(--text-body);
+  font-weight: 600;
   line-height: 1.2;
-  border: var(--stroke-width) solid var(--color-stroke);
-  padding: 0.05rem 0.4rem;
+  white-space: nowrap;
+  border: var(--stroke-width) solid color-mix(in srgb, var(--color-text-title) 65%, var(--color-stroke));
+  background: color-mix(in srgb, var(--color-text-title) 12%, var(--color-surface));
+  padding: 0.16rem 0.55rem;
+}
+
+.project-card__credit-type,
+.project-card__type-tag,
+.project-card__status {
+  --project-tag-color: var(--tag-color-others);
+  font-size: 0.7rem;
+  line-height: 1.1;
+  border-radius: var(--radius-default);
+  padding: 0.08rem 0.28rem;
+  border: var(--stroke-width) solid color-mix(in srgb, var(--project-tag-color) 78%, transparent);
+  color: var(--project-tag-color);
+  background-color: color-mix(in srgb, var(--project-tag-color) 14%, var(--color-surface));
+}
+
+.project-card__credit-type {
+  background-color: color-mix(in srgb, var(--project-tag-color) 20%, var(--color-surface));
 }
 
 .project-card__type-tag {
-  font-size: var(--text-caption);
-  border-radius: var(--radius-default);
-  padding: 0.1rem 0.35rem;
-  border: var(--stroke-width) solid transparent;
+  background-color: transparent;
+  border-style: dashed;
 }
 
-.project-card__type-tag--publications {
-  background-color: var(--tag-color-publications);
-  border-color: var(--tag-color-publications);
-  color: #1a1a1a;
+.project-card__credit-type--papers,
+.project-card__type-tag--fullPapers {
+  --project-tag-color: var(--tag-color-papers);
 }
 
-.project-card__type-tag--firstAuthors {
-  background-color: var(--tag-color-firstAuthors);
-  border-color: var(--tag-color-firstAuthors);
-  color: #1a1a1a;
-}
-
-.project-card__type-tag--artworks {
-  background-color: var(--tag-color-artworks);
-  border-color: var(--tag-color-artworks);
-  color: #efefef;
-}
-
+.project-card__credit-type--competitions,
 .project-card__type-tag--competitions {
-  background-color: var(--tag-color-competitions);
-  border-color: var(--tag-color-competitions);
-  color: #1a1a1a;
+  --project-tag-color: var(--tag-color-competitions);
+}
+
+.project-card__credit-type--exhibitions,
+.project-card__type-tag--exhibitions {
+  --project-tag-color: var(--tag-color-exhibitions);
+}
+
+.project-card__type-tag--posters {
+  --project-tag-color: var(--tag-color-posters);
+}
+
+.project-card__type-tag--demos {
+  --project-tag-color: var(--tag-color-demos);
 }
 
 .project-card__type-tag--workshops {
-  background-color: var(--tag-color-workshops);
-  border-color: var(--tag-color-workshops);
-  color: #1a1a1a;
+  --project-tag-color: var(--tag-color-workshops);
 }
 
-.project-card__type-tag--others {
-  background-color: var(--tag-color-others);
-  border-color: var(--tag-color-others);
-  color: #efefef;
+.project-card__credit-type--others {
+  --project-tag-color: var(--tag-color-others);
+}
+
+.project-card__status--firstAuthors {
+  --project-tag-color: var(--tag-color-firstAuthors);
+  border-style: dashed;
+}
+
+.project-card__status--groupArtworks {
+  --project-tag-color: var(--tag-color-artworks);
+  border-style: dashed;
 }
 
 .project-card__body {
@@ -647,11 +645,9 @@ h2 {
 .content-page__heading h1,
 .site-header-title,
 .description-div h2,
-.projects-heading__label,
 .content-page__heading h1 .sparkle-text__char,
 .site-header-title .sparkle-text__char,
-.description-div h2 .sparkle-text__char,
-.projects-heading__label .sparkle-text__char {
+.description-div h2 .sparkle-text__char {
   text-shadow:
     0 0 var(--title-bloom-near) currentColor,
     0 0 var(--title-bloom-far) color-mix(in srgb, currentColor 55%, transparent);
@@ -766,6 +762,16 @@ h2 {
 .content-page__heading h1 {
   font-family: var(--font-display);
   font-size: var(--text-h2);
+}
+
+.works-page .content-page__heading {
+  padding-right: 0;
+  align-items: stretch;
+}
+
+.works-page .content-page__heading h1 {
+  display: flex;
+  align-items: center;
 }
 
 .intro-page .description-div h2 {
