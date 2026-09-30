@@ -31,18 +31,25 @@ function normalizeProject(project) {
     || creditType.includes('others')
     ? creditType
     : [...creditType, 'others'];
+  const authorship = Array.isArray(project.authorship)
+    ? [...new Set(project.authorship)]
+    : project.authorship
+      ? [project.authorship]
+      : [];
 
   return {
     ...project,
     creditType: normalizedCreditType,
     type: Array.isArray(project.type) ? project.type : [],
     images: getProjectImages(project),
+    authorship,
   };
 }
 
 function projectMatchesFilters(project, activeFilters) {
   const creditTypes = project.creditType ?? [];
   const types = project.type ?? [];
+  const authorships = project.authorship ?? [];
   const matches = {
     papers: creditTypes.includes('paper') || types.includes('full-paper'),
     posters: types.includes('poster'),
@@ -50,8 +57,8 @@ function projectMatchesFilters(project, activeFilters) {
     exhibitions: creditTypes.includes('exhibition') || types.includes('exhibition'),
     competitions: creditTypes.includes('competition') || types.includes('competition'),
     workshops: types.includes('workshop'),
-    firstAuthors: project.authorship === 'first-author',
-    groupArtworks: project.authorship === 'group-artwork',
+    firstAuthors: authorships.includes('first-author'),
+    groupArtworks: authorships.includes('group-artwork'),
     others: creditTypes.includes('others'),
   };
 

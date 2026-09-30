@@ -91,7 +91,7 @@
     "year": 2023,
     "creditType": ["competition"],
     "type": ["competition"],
-    "authorship": "group-artwork",
+    "authorship": ["group-artwork", "first-author"],
     "titleEn": "MAX Tongue",
     "titleZh": "MAX Tongue",
     "contentEn": "MAX Tongue explores tongue-based interaction in VR using EMG sensing and a lollipop-based demo. Different licking actions move targets in virtual space, inviting users to reconsider the tongue as an expressive input channel. Exhibited at Laval Virtual 2023.",

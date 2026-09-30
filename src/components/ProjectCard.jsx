@@ -45,9 +45,9 @@ export default function ProjectCard({ project }) {
     const matchingCredit = DUPLICATE_FORMAT_CREDITS[type];
     return !matchingCredit || !creditTypes.includes(matchingCredit);
   });
-  const authorship = project.authorship;
+  const authorships = project.authorship ?? [];
   const credit = String(project.credit ?? '').trim();
-  const hasProjectTags = creditTypes.length > 0 || formatTypes.length > 0 || authorship;
+  const hasProjectTags = creditTypes.length > 0 || formatTypes.length > 0 || authorships.length > 0;
   const currentImage = images[imageIndex] ?? images[0];
   const hasMultipleImages = images.length > 1;
 
@@ -89,15 +89,16 @@ export default function ProjectCard({ project }) {
                 {content.projectTags?.types?.[value] ?? value}
               </span>
             ))}
-            {authorship && (
+            {authorships.map((value) => (
               <span
+                key={`authorship-${value}`}
                 className={`project-card__status project-card__status--${
-                  authorship === 'first-author' ? 'firstAuthors' : 'groupArtworks'
+                  value === 'first-author' ? 'firstAuthors' : 'groupArtworks'
                 }`}
               >
-                {content.projectTags?.authorship?.[authorship] ?? authorship}
+                {content.projectTags?.authorship?.[value] ?? value}
               </span>
-            )}
+            ))}
           </div>
         )}
       </div>
