@@ -1,4 +1,10 @@
-import { getHoleCenter, getLauncherOrigin, getPolygonVertices, normalize } from './physics';
+import {
+  getButtonPanelBottom,
+  getHoleCenter,
+  getLauncherOrigin,
+  getPolygonVertices,
+  normalize,
+} from './physics';
 
 function drawPixelGrid(context, width, height) {
   context.save();
@@ -79,6 +85,7 @@ function drawPoolSpot(context, state, config) {
     state.height,
     config.piece.radius,
     config.launch,
+    getButtonPanelBottom(state.colliders.buttons),
   );
   const spotRadius = config.piece.radius * 1.35;
   const cooldownMs = config.launch.cooldownMs ?? 2000;

@@ -5,6 +5,7 @@ import {
   clamp,
   distanceSquared,
   getHoleCenter,
+  getButtonPanelBottom,
   getLauncherOrigin,
   normalize,
   reflectVelocity,
@@ -215,6 +216,7 @@ export function createGame({
       state.height,
       config.piece.radius,
       config.launch,
+      getButtonPanelBottom(state.colliders.buttons),
     );
   }
 

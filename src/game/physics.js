@@ -51,18 +51,54 @@ export function circleRectCollision(circle, rect) {
   };
 }
 
-export function getLauncherOrigin(width, height, radius, launchConfig = {}) {
+const START_SPOT_SCALE = 1.35;
+const START_LABEL_GAP = 6;
+const START_LABEL_HEIGHT = 12;
+
+export function getButtonPanelBottom(buttons = []) {
+  let bottom = null;
+  for (const button of buttons) {
+    const rect = button?.rect;
+    if (!rect || rect.h <= 0) continue;
+    const edge = rect.y + rect.h;
+    bottom = bottom == null ? edge : Math.max(bottom, edge);
+  }
+  return bottom;
+}
+
+function launcherMarkerTopOffset(radius) {
+  return radius * START_SPOT_SCALE + START_LABEL_GAP + START_LABEL_HEIGHT;
+}
+
+export function getLauncherOrigin(width, height, radius, launchConfig = {}, panelBottom = null) {
   const baseOffset = Math.max(radius * 2.5, 24);
-  const mobileOffset = width <= (launchConfig.mobileBreakpoint ?? 640)
+  const isMobile = width <= (launchConfig.mobileBreakpoint ?? 640);
+  const lift = isMobile
     ? Math.min(
       height * (launchConfig.mobileOriginRatio ?? 0.08),
       launchConfig.mobileOriginMax ?? 64,
     )
     : launchConfig.originOffset ?? 0;
+  const preferredY = height - baseOffset - lift;
+  const maxY = height - Math.max(radius, 8);
+  let y = preferredY;
+
+  if (!isMobile && panelBottom != null) {
+    const markerTop = launcherMarkerTopOffset(radius);
+    const gap = launchConfig.panelGap ?? 16;
+    const overlapMax = launchConfig.panelOverlapMax ?? 12;
+    const clearY = panelBottom + markerTop + gap;
+    if (clearY <= maxY) {
+      y = Math.max(preferredY, clearY);
+    } else {
+      const tuckedY = panelBottom + markerTop - overlapMax;
+      y = Math.min(maxY, Math.max(preferredY, tuckedY));
+    }
+  }
 
   return {
     x: width / 2,
-    y: Math.max(radius, height - baseOffset - mobileOffset),
+    y: clamp(y, radius, maxY),
   };
 }
 
