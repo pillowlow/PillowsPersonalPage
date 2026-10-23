@@ -4,6 +4,7 @@ export const ROUTES = [
   { id: 'accounts', path: '/accounts' },
   { id: 'demos', path: '/demos' },
   { id: 'works', path: '/works' },
+  { id: 'qrcode', path: '/qrcode' },
 ];
 
 export const HOME_BUTTONS = ['intro', 'accounts', 'demos', 'works'];

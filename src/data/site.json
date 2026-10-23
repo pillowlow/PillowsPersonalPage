@@ -25,6 +25,11 @@
       },
       "works": {
         "title": "Porjects"
+      },
+      "qrcode": {
+        "title": "QR code",
+        "alt": "QR code linking to pillowlowchen.com",
+        "caption": "Scan to visit pillowlowchen.com"
       }
     },
     "hud": {
@@ -117,6 +122,11 @@
       },
       "works": {
         "title": "作品"
+      },
+      "qrcode": {
+        "title": "QR code",
+        "alt": "連到 pillowlowchen.com 的 QR code",
+        "caption": "掃描前往 pillowlowchen.com"
       }
     },
     "hud": {

@@ -4,6 +4,7 @@ import AccountsPage from '../../pages/AccountsPage';
 import DemosPage from '../../pages/DemosPage';
 import HomePage from '../../pages/HomePage';
 import IntroPage from '../../pages/IntroPage';
+import QrCodePage from '../../pages/QrCodePage';
 import WorksPage from '../../pages/WorksPage';
 import SiteHeader from './SiteHeader';
 
@@ -20,6 +21,7 @@ export default function AppLayout() {
     accounts: AccountsPage,
     demos: DemosPage,
     works: WorksPage,
+    qrcode: QrCodePage,
   }[routeId] ?? HomePage;
 
   return (

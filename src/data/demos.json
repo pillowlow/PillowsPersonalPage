@@ -1,5 +1,15 @@
 [
   {
+    "id": "qrcode",
+    "href": "#/qrcode",
+    "titleEn": "QR code",
+    "titleZh": "QR code",
+    "year": "",
+    "descriptionEn": "Scan to visit pillowlowchen.com",
+    "descriptionZh": "掃描前往 pillowlowchen.com",
+    "tags": []
+  },
+  {
     "id": "sapereculum",
     "href": "https://sapereculum.com/login",
     "titleEn": "sapereculum",

@@ -786,6 +786,32 @@ h2 {
   align-items: center;
 }
 
+.qrcode-page__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--card-gap);
+  margin: 0;
+  padding: var(--content-padding);
+  background-color: var(--color-surface);
+  border: var(--stroke-width) solid var(--color-stroke);
+}
+
+.qrcode-page__image {
+  width: min(80vw, 60dvh, 26rem);
+  height: auto;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+  background: #fff;
+}
+
+.qrcode-page__caption {
+  color: var(--color-text-content);
+  font-family: var(--font-hud);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
 .intro-page .description-div h2 {
   font-family: var(--font-display);
   font-size: var(--text-h2);
